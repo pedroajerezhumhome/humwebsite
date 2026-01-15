@@ -469,16 +469,16 @@ export default function Home() {
 
             {/* Policy Links */}
             <div className="flex flex-col gap-3 sm:gap-4 text-center sm:text-left">
-              <a href="#" className="text-xs text-[#666] uppercase tracking-wider hover:text-[#333] transition-colors">
+              <a href="/privacy-policy" className="text-xs text-[#666] uppercase tracking-wider hover:text-[#333] transition-colors">
                 Privacy Policy
               </a>
-              <a href="#" className="text-xs text-[#666] uppercase tracking-wider hover:text-[#333] transition-colors">
+              <a href="/terms-of-service" className="text-xs text-[#666] uppercase tracking-wider hover:text-[#333] transition-colors">
                 Terms of Service
               </a>
-              <a href="#" className="text-xs text-[#666] uppercase tracking-wider hover:text-[#333] transition-colors">
+              <a href="/disclaimer" className="text-xs text-[#666] uppercase tracking-wider hover:text-[#333] transition-colors">
                 Disclaimer
               </a>
-              <a href="#" className="text-xs text-[#666] uppercase tracking-wider hover:text-[#333] transition-colors">
+              <a href="/cookie-policy" className="text-xs text-[#666] uppercase tracking-wider hover:text-[#333] transition-colors">
                 Cookie Policy
               </a>
             </div>
