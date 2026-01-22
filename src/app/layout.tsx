@@ -52,6 +52,32 @@ export default function RootLayout({
           fbq('init', '327919584598740');
           fbq('track', 'PageView');
         `}</Script>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=AW-17614599015"
+          strategy="afterInteractive"
+        />
+        <Script
+          id="gtag-aw-17614599015"
+          strategy="afterInteractive"
+        >{`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'AW-17614599015');
+        `}</Script>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-G429QKPLE1"
+          strategy="afterInteractive"
+        />
+        <Script
+          id="gtag-g-g429qkple1"
+          strategy="afterInteractive"
+        >{`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-G429QKPLE1');
+        `}</Script>
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
