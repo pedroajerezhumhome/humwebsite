@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { submitToMaropost } from "../actions";
 import Script from "next/script";
 
 export default function Home() {
@@ -9,6 +10,8 @@ export default function Home() {
   const [city, setCity] = useState("");
   const [otherCity, setOtherCity] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [faqOpen, setFaqOpen] = useState(false);
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [showNav, setShowNav] = useState(false);
@@ -104,93 +107,28 @@ export default function Home() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (email && city && (city !== "Other" || otherCity)) {
-      setSubmitted(true);
+      setIsSubmitting(true);
+      setSubmitError(null);
+
+      const finalCity = city === "Other" ? otherCity : city;
+
+      const result = await submitToMaropost({
+        email,
+        city: finalCity,
+      });
+
+      setIsSubmitting(false);
+
+      if (result.success) {
+        setSubmitted(true);
+      } else {
+        setSubmitError("Something went wrong. Please try again.");
+      }
     }
   };
-
-  const EmailForm = ({ darkBg = false }: { darkBg?: boolean }) =>
-    !submitted ? (
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col gap-3 max-w-xl mx-auto px-4 sm:px-0"
-      >
-        <div className="flex flex-col sm:flex-row gap-3">
-          <input
-            type="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className={`flex-1 px-4 sm:px-5 py-3 sm:py-4 rounded-full border ${
-              darkBg
-                ? "border-[#333] bg-[#F0F0F0] text-white placeholder-[#666]"
-                : "border-[#e0e0e0] bg-[#fefdfb] text-[#323B46] placeholder-[#999]"
-            } focus:outline-none focus:border-[#666] transition-colors text-sm sm:text-base`}
-          />
-          <select
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            required
-            className={`px-4 sm:px-5 py-3 sm:py-4 rounded-full border appearance-none cursor-pointer ${
-              darkBg
-                ? "border-[#333] bg-[#F0F0F0] text-white"
-                : "border-[#e0e0e0] bg-[#fefdfb] text-[#323B46]"
-            } focus:outline-none focus:border-[#666] transition-colors text-sm sm:text-base ${
-              !city ? (darkBg ? "text-[#666]" : "text-[#999]") : ""
-            }`}
-          >
-            <option value="" disabled>
-              Select your city
-            </option>
-            {cities.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
-        </div>
-        {city === "Other" && (
-          <input
-            type="text"
-            placeholder="Enter your city"
-            value={otherCity}
-            onChange={(e) => setOtherCity(e.target.value)}
-            required
-            className={`px-4 sm:px-5 py-3 sm:py-4 rounded-full border ${
-              darkBg
-                ? "border-[#333] bg-[#F0F0F0] text-white placeholder-[#666]"
-                : "border-[#e0e0e0] bg-[#fefdfb] text-[#323B46] placeholder-[#999]"
-            } focus:outline-none focus:border-[#666] transition-colors text-sm sm:text-base`}
-          />
-        )}
-        <button
-          type="submit"
-          className={`px-6 sm:px-8 py-3 sm:py-4 ${
-            darkBg
-              ? "bg-[#fefdfb] text-[#323B46] hover:bg-[#efe9e4]"
-              : "bg-[#1a1a1a] text-white hover:bg-black"
-          } font-medium rounded-full transition-colors text-sm sm:text-base`}
-        >
-          Sign Me Up
-        </button>
-      </form>
-    ) : (
-      <div className="inline-block">
-        <p
-          className={`text-lg font-medium ${
-            darkBg ? "text-white" : "text-[#323B46]"
-          }`}
-        >
-          You&apos;re on the list.
-        </p>
-        <p className={`mt-1 ${darkBg ? "text-[#999]" : "text-[#666]"}`}>
-          We&apos;ll be in touch soon.
-        </p>
-      </div>
-    );
 
   return (
     <div className="bg-[#fefdfb] text-[#454545] overflow-x-hidden">
@@ -615,7 +553,67 @@ export default function Home() {
             <p className="text-base sm:text-lg md:text-xl text-[#888] mb-6">
               Not ready to talk yet? Stay in the loop.
             </p>
-            <EmailForm />
+            {!submitted ? (
+              <form
+                onSubmit={handleSubmit}
+                className="flex flex-col gap-3 max-w-xl mx-auto px-4 sm:px-0"
+              >
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <input
+                    type="email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="flex-1 px-4 sm:px-5 py-3 sm:py-4 rounded-full border border-[#e0e0e0] bg-[#fefdfb] text-[#323B46] placeholder-[#999] focus:outline-none focus:border-[#666] transition-colors text-sm sm:text-base"
+                  />
+                  <select
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    required
+                    className={`px-4 sm:px-5 py-3 sm:py-4 rounded-full border appearance-none cursor-pointer border-[#e0e0e0] bg-[#fefdfb] text-[#323B46] focus:outline-none focus:border-[#666] transition-colors text-sm sm:text-base ${
+                      !city ? "text-[#999]" : ""
+                    }`}
+                  >
+                    <option value="" disabled>
+                      Select your city
+                    </option>
+                    {cities.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {city === "Other" && (
+                  <input
+                    type="text"
+                    placeholder="Enter your city"
+                    value={otherCity}
+                    onChange={(e) => setOtherCity(e.target.value)}
+                    required
+                    className="px-4 sm:px-5 py-3 sm:py-4 rounded-full border border-[#e0e0e0] bg-[#fefdfb] text-[#323B46] placeholder-[#999] focus:outline-none focus:border-[#666] transition-colors text-sm sm:text-base"
+                  />
+                )}
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="px-6 sm:px-8 py-3 sm:py-4 bg-[#1a1a1a] text-white hover:bg-black font-medium rounded-full transition-colors text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? "Submitting..." : "Sign Me Up"}
+                </button>
+                {submitError && (
+                  <p className="text-sm text-red-600">{submitError}</p>
+                )}
+              </form>
+            ) : (
+              <div className="inline-block">
+                <p className="text-lg font-medium text-[#323B46]">
+                  You&apos;re on the list.
+                </p>
+                <p className="mt-1 text-[#666]">We&apos;ll be in touch soon.</p>
+              </div>
+            )}
           </div>
         </div>
       </section>
