@@ -625,12 +625,6 @@ export default function Home() {
             <img src="/hum-logo.jpg" alt="HUM" className="h-6 w-auto" />
             <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
               <a
-                href="/careers/austin"
-                className="text-xs text-[#999] hover:text-[#666] transition-colors"
-              >
-                Careers
-              </a>
-              <a
                 href="/privacy-policy"
                 className="text-xs text-[#999] hover:text-[#666] transition-colors"
               >
