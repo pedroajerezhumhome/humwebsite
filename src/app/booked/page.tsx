@@ -238,13 +238,6 @@ function CountdownTimer() {
           <p className="text-[14px] sm:text-[18px] text-[#323B46]">
             {formattedDateTime}
           </p>
-
-          {/* Assigned To */}
-          {assignedTo && (
-            <p className="text-[13px] sm:text-[16px] text-[#888] mt-1">
-              with {assignedTo}
-            </p>
-          )}
         </div>
       </div>
     </section>
@@ -342,15 +335,15 @@ function PersonalizedHero() {
       <div className="max-w-2xl mx-auto text-center">
         {/* Top Label */}
         <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-[#b8926b] mb-4 sm:mb-6">
-          BOOKING CONFIRMED
+          CALL SCHEDULED
         </p>
 
         {/* Main Headline */}
         <h1 className="text-[28px] sm:text-[44px] md:text-[52px] font-semibold text-[#323B46] leading-[1.15] tracking-tight mb-3 sm:mb-5">
           {firstName ? (
-            <>Congratulations {firstName},<br />You&apos;re Confirmed!</>
+            <>Congratulations {firstName},<br />You&apos;re Booked!</>
           ) : (
-            <>Congratulations,<br />You&apos;re Confirmed!</>
+            <>Congratulations,<br />You&apos;re Booked!</>
           )}
         </h1>
 
