@@ -542,13 +542,13 @@ export default function BookedPage() {
           </p>
 
           <h2 className="text-[26px] sm:text-[44px] md:text-[42px] font-semibold text-[#323B46] leading-tight mb-6 sm:mb-10 text-center">
-            Important Details Below
+            Save the Date
           </h2>
 
           {/* Calendar Card */}
           <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-sm">
             <h3 className="text-[15px] sm:text-[20px] font-semibold text-[#323B46] mb-2">
-              Confirm the calendar invite that was just sent to your email.
+              Accept the calendar invite that was just sent to your email.
             </h3>
 
             {/* Dynamic Calendar Invite Preview */}
@@ -557,7 +557,7 @@ export default function BookedPage() {
             </Suspense>
 
             <p className="text-[12px] sm:text-[14px] text-[#555] leading-relaxed">
-              <span className="font-semibold">Why this matters:</span> Confirming your calendar invite ensures we have your appointment locked in and you&apos;ll receive all the important details and reminders leading up to our call.
+              <span className="font-semibold">Why this matters:</span> Accepting your calendar invite ensures you have the appointment saved and you&apos;ll receive all the important details and reminders leading up to our call.
             </p>
           </div>
         </div>
