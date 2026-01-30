@@ -737,7 +737,9 @@ export default function WelcomePage() {
           HEADER - Logo
       =================================================================== */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 sm:py-5">
-        <img src="/hum-logo.png" alt="HUM" className="h-6 sm:h-8 w-auto" />
+        <Link href="/">
+          <img src="/hum-logo.png" alt="HUM" className="h-6 sm:h-8 w-auto" />
+        </Link>
       </div>
 
       {/* ===================================================================
