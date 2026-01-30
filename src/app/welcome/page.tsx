@@ -423,7 +423,7 @@ function JourneyTimeline() {
 
   return (
     <section className="px-4 py-10 sm:py-16 bg-[#fefdfb]">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-8 sm:mb-10">
           <div className="w-10 h-[2px] bg-[#b8926b] mx-auto mb-4"></div>
@@ -439,10 +439,10 @@ function JourneyTimeline() {
         <div className="hidden sm:block">
           <div className="relative">
             {/* Connector Line */}
-            <div className="absolute top-4 left-[10%] right-[10%] h-[2px] bg-[#e0d8cd]" />
+            <div className="absolute top-4 left-[8%] right-[8%] h-[2px] bg-[#e0d8cd]" />
 
             {/* Milestones */}
-            <div className="grid grid-cols-6 gap-2">
+            <div className="grid grid-cols-6 gap-4">
               {milestones.map((milestone, index) => (
                 <div key={index} className="flex flex-col items-center text-center">
                   <div
