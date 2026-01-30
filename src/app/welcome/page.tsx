@@ -185,7 +185,7 @@ function ActionStepsSection() {
   const steps = [
     { num: 1, title: "Agreement", icon: "✍️" },
     { num: 2, title: "Questionnaire", icon: "📝" },
-    { num: 3, title: "Kickoff Call", icon: "🎥" },
+    { num: 3, title: "Kickoff Call", icon: "📅" },
   ];
 
   return (
