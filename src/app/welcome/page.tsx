@@ -167,11 +167,8 @@ function PersonalizedHero() {
         </div>
 
         {/* CTA intro */}
-        <p className="text-[14px] sm:text-[18px] text-[#555] leading-relaxed mb-3">
+        <p className="text-[14px] sm:text-[18px] text-[#555] leading-relaxed">
           Complete the three steps below to start your journey.
-        </p>
-        <p className="text-[13px] sm:text-[15px] text-[#888] bg-[#f8f6f2] inline-block px-4 py-2 rounded-full">
-          Your recruitment search begins once all three are done.
         </p>
       </div>
     </section>
