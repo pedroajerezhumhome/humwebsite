@@ -229,7 +229,7 @@ function ActionStepsSection() {
             Three Things To Do Today
           </h2>
           <p className="text-[14px] sm:text-[16px] text-[#666]">
-            We launch your search <span className="font-semibold text-[#323B46]">24 hours after you complete all three</span>.
+            We launch your house manager search <span className="font-semibold text-[#323B46]">24 hours after you complete all three</span>.
           </p>
         </div>
 
