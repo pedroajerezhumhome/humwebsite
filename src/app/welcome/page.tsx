@@ -167,8 +167,11 @@ function PersonalizedHero() {
         </div>
 
         {/* CTA intro */}
-        <p className="text-[14px] sm:text-[18px] text-[#555] leading-relaxed">
+        <p className="text-[14px] sm:text-[18px] text-[#555] leading-relaxed mb-3">
           Complete the three steps below to start your journey.
+        </p>
+        <p className="text-[13px] sm:text-[15px] text-[#888] bg-[#f8f6f2] inline-block px-4 py-2 rounded-full">
+          Your recruitment search begins once all three are done.
         </p>
       </div>
     </section>
@@ -222,9 +225,12 @@ function ActionStepsSection() {
           <p className="text-xs uppercase tracking-widest text-[#b8926b] mb-3">
             Your Next Steps
           </p>
-          <h2 className="text-[26px] sm:text-[36px] md:text-[42px] font-semibold text-[#323B46] leading-tight">
+          <h2 className="text-[26px] sm:text-[36px] md:text-[42px] font-semibold text-[#323B46] leading-tight mb-3">
             Three Things To Do Today
           </h2>
+          <p className="text-[14px] sm:text-[16px] text-[#666]">
+            We launch your search <span className="font-semibold text-[#323B46]">24 hours after you complete all three</span>.
+          </p>
         </div>
 
         {/* Step Tabs */}
