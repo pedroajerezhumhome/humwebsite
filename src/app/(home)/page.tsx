@@ -23,24 +23,25 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Load Scheduler.ai - official script embed
+  // Load Scheduler.ai - create iframe directly for stable layout
   useEffect(() => {
-    // Check if script already exists (handles React strict mode)
-    if (document.getElementById("scheduler-script")) return;
+    const container = document.getElementById("demo-scheduler-container");
+    if (!container) return;
 
-    const script = document.createElement("script");
-    script.src = "https://app.scheduler.ai/scheduler-embed.js";
-    script.id = "scheduler-script";
-    script.setAttribute("data-pool-id", "73b74168-a87e-4c70-a140-cb2161e112f4");
-    script.setAttribute("data-container-id", "demo-scheduler-container");
-    script.setAttribute("data-hide-logo", "true");
+    // Check if iframe already exists (handles React strict mode)
+    if (document.getElementById("scheduler-iframe")) return;
 
-    document.body.appendChild(script);
+    const iframe = document.createElement("iframe");
+    iframe.src = "https://app.scheduler.ai/book_meeting/?poolID=73b74168-a87e-4c70-a140-cb2161e112f4&embedded=true&embed=true&hideLogo=true&hide_logo=true";
+    iframe.id = "scheduler-iframe";
+    iframe.title = "Scheduler.ai Booking Form";
+    iframe.allow = "fullscreen";
+    iframe.setAttribute("scrolling", "no");
+    iframe.setAttribute("frameborder", "0");
+    iframe.setAttribute("allowtransparency", "true");
+    iframe.style.cssText = "width: 100%; height: 700px; border: none; display: block; background: transparent;";
 
-    return () => {
-      const existingScript = document.getElementById("scheduler-script");
-      if (existingScript) existingScript.remove();
-    };
+    container.appendChild(iframe);
   }, []);
 
   const cities = [
@@ -568,10 +569,10 @@ export default function Home() {
           </p>
 
           {/* Scheduler.ai Widget */}
-          <div className="mb-2 w-full max-w-6xl mx-auto overflow-x-auto">
+          <div className="mb-2 w-full max-w-4xl mx-auto">
             <div
               id="demo-scheduler-container"
-              className="min-h-[700px] w-full"
+              className="h-[700px] w-full"
             />
           </div>
 
