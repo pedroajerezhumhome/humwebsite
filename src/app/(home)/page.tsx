@@ -23,7 +23,7 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Load Scheduler.ai - create iframe directly for full width control
+  // Load Scheduler.ai - create iframe directly for responsive width
   useEffect(() => {
     const container = document.getElementById("scheduler-container");
     if (!container) return;
@@ -40,7 +40,7 @@ export default function Home() {
     iframe.setAttribute("frameborder", "0");
     iframe.setAttribute("allowtransparency", "true");
     iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox");
-    iframe.style.cssText = "width: 100%; min-width: 900px; height: 700px; min-height: 600px; border: none; overflow: auto; display: block; background: transparent;";
+    iframe.style.cssText = "width: 100%; height: 100%; min-height: 500px; border: none; overflow: auto; display: block; background: transparent;";
 
     container.appendChild(iframe);
   }, []);
@@ -293,20 +293,34 @@ export default function Home() {
       <section className="min-h-screen flex items-center justify-center px-4 relative">
         <div className="max-w-4xl mx-auto text-center">
           {/* Trusted by moms badge */}
-          <div className="inline-flex items-center gap-2 border border-[#e0dbd4] rounded-full px-5 py-2 mb-8 sm:mb-12">
-            <span className="text-[#c4a97d] text-base sm:text-lg">&#x1F90D;&#x1F90D;&#x1F90D;</span>
-            <span className="text-sm sm:text-base text-[#888] font-medium">Trusted by moms</span>
+          <div className="inline-flex items-center gap-2.5 border border-[#e0dbd4] rounded-full px-5 py-2 mb-8 sm:mb-12">
+            <div className="flex items-center" style={{ marginRight: '-2px' }}>
+              {[...Array(5)].map((_, i) => (
+                <svg
+                  key={i}
+                  width="16"
+                  height="14"
+                  viewBox="0 0 16 14"
+                  fill="#c4a67d"
+                  xmlns="http://www.w3.org/2000/svg"
+                  style={{ marginLeft: i === 0 ? 0 : '-5px', position: 'relative', zIndex: 5 - i }}
+                >
+                  <path d="M8 14s-5.5-3.5-7-7C-.5 3.5.5 0 3.5 0 5 0 6.5 1 8 2.5 9.5 1 11 0 12.5 0c3 0 4 3.5 2.5 7-1.5 3.5-7 7-7 7z" />
+                </svg>
+              ))}
+            </div>
+            <span className="text-sm sm:text-base text-[#777] font-medium">Trusted by moms</span>
           </div>
 
-          <h1 className="text-[36px] sm:text-[60px] md:text-[76px] font-semibold text-[#454545] leading-[1.08] tracking-tight mb-2 sm:mb-3">
+          <h1 className="text-[36px] sm:text-[60px] md:text-[76px] font-semibold text-[#2d2d2d] leading-[1.08] tracking-tight mb-2 sm:mb-3">
             Your home on autopilot.
           </h1>
-          <h2 className="text-[36px] sm:text-[60px] md:text-[76px] font-semibold text-[#c4a97d] leading-[1.08] tracking-tight mb-8 sm:mb-10">
+          <h2 className="text-[36px] sm:text-[60px] md:text-[76px] font-semibold text-[#c9b99a] leading-[1.08] tracking-tight mb-8 sm:mb-10">
             No lists. No reminders.<br />
             No mental load.
           </h2>
 
-          <p className="text-base sm:text-lg md:text-xl text-[#888] max-w-2xl mx-auto mb-8 sm:mb-12 leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-[#777] max-w-2xl mx-auto mb-8 sm:mb-12 leading-relaxed">
             HUM builds your household operating system, finds and trains your
             perfect house manager to run it, and stays involved until it actually
             works so you don&apos;t have to.
@@ -565,16 +579,15 @@ export default function Home() {
           <h2 className="text-[30px] sm:text-[44px] md:text-[56px] font-semibold text-[#454545] leading-tight mb-4">
             Ready to stop managing?
           </h2>
-          <p className="text-base sm:text-xl md:text-2xl text-[#454545] mb-2 sm:mb-3 max-w-2xl mx-auto">
+          <p className="text-base sm:text-xl md:text-2xl text-[#454545] mb-1 max-w-2xl mx-auto">
             Book a free call with our team.
           </p>
 
-          {/* Scheduler.ai Widget */}
-          <div className="mb-6 sm:mb-8 w-full max-w-6xl mx-auto overflow-x-auto">
+          {/* Scheduler.ai Widget - Mobile responsive */}
+          <div className="mb-4 sm:mb-6 w-full max-w-6xl mx-auto">
             <div
               id="scheduler-container"
-              className="min-h-[700px] w-full"
-              style={{ minWidth: "900px" }}
+              className="h-[600px] sm:h-[650px] md:h-[700px] w-full"
             />
           </div>
 
