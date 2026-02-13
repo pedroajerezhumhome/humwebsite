@@ -312,15 +312,15 @@ export default function Home() {
             <span className="text-sm sm:text-base text-[#777] font-medium">Trusted by moms</span>
           </div>
 
-          <h1 className="text-[36px] sm:text-[60px] md:text-[76px] font-semibold text-[#2d2d2d] leading-[1.08] tracking-tight mb-2 sm:mb-3">
+          <h1 className="text-[36px] sm:text-[60px] md:text-[76px] font-semibold text-[#0e0e0d] leading-[1.08] tracking-tight mb-2 sm:mb-3">
             Your home on autopilot.
           </h1>
-          <h2 className="text-[36px] sm:text-[60px] md:text-[76px] font-semibold text-[#c6b598] leading-[1.08] tracking-tight mb-8 sm:mb-10">
+          <h2 className="text-[36px] sm:text-[60px] md:text-[76px] font-semibold text-[#c6bfb5] leading-[1.08] tracking-tight mb-8 sm:mb-10">
             No lists. No reminders.<br />
             No mental load.
           </h2>
 
-          <p className="text-base sm:text-lg md:text-xl text-[#777] max-w-2xl mx-auto mb-8 sm:mb-12 leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-[#969593] max-w-2xl mx-auto mb-8 sm:mb-12 leading-relaxed">
             HUM builds your household operating system, finds and trains your
             perfect house manager to run it, and stays involved until it actually
             works so you don&apos;t have to.
@@ -579,12 +579,12 @@ export default function Home() {
           <h2 className="text-[30px] sm:text-[44px] md:text-[56px] font-semibold text-[#454545] leading-tight mb-4">
             Ready to stop managing?
           </h2>
-          <p className="text-base sm:text-xl md:text-2xl text-[#454545] mb-1 max-w-2xl mx-auto">
+          <p className="text-base sm:text-xl md:text-2xl text-[#454545] mb-3 sm:mb-4 max-w-2xl mx-auto">
             Book a free call with our team.
           </p>
 
           {/* Scheduler.ai Widget */}
-          <div className="mb-4 sm:mb-6 w-full max-w-6xl mx-auto overflow-x-auto">
+          <div className="mb-6 sm:mb-8 w-full max-w-6xl mx-auto overflow-x-auto">
             <div
               id="scheduler-container"
               className="min-h-[700px] w-full"
