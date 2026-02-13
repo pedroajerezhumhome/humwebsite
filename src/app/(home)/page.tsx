@@ -23,7 +23,7 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Load Scheduler.ai - create iframe directly for responsive width
+  // Load Scheduler.ai - create iframe directly for full width control
   useEffect(() => {
     const container = document.getElementById("scheduler-container");
     if (!container) return;
@@ -40,7 +40,7 @@ export default function Home() {
     iframe.setAttribute("frameborder", "0");
     iframe.setAttribute("allowtransparency", "true");
     iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox");
-    iframe.style.cssText = "width: 100%; height: 100%; min-height: 500px; border: none; overflow: auto; display: block; background: transparent;";
+    iframe.style.cssText = "width: 100%; min-width: 900px; height: 700px; min-height: 600px; border: none; overflow: auto; display: block; background: transparent;";
 
     container.appendChild(iframe);
   }, []);
@@ -315,7 +315,7 @@ export default function Home() {
           <h1 className="text-[36px] sm:text-[60px] md:text-[76px] font-semibold text-[#2d2d2d] leading-[1.08] tracking-tight mb-2 sm:mb-3">
             Your home on autopilot.
           </h1>
-          <h2 className="text-[36px] sm:text-[60px] md:text-[76px] font-semibold text-[#c9b99a] leading-[1.08] tracking-tight mb-8 sm:mb-10">
+          <h2 className="text-[36px] sm:text-[60px] md:text-[76px] font-semibold text-[#c6b598] leading-[1.08] tracking-tight mb-8 sm:mb-10">
             No lists. No reminders.<br />
             No mental load.
           </h2>
@@ -583,11 +583,12 @@ export default function Home() {
             Book a free call with our team.
           </p>
 
-          {/* Scheduler.ai Widget - Mobile responsive */}
-          <div className="mb-4 sm:mb-6 w-full max-w-6xl mx-auto">
+          {/* Scheduler.ai Widget */}
+          <div className="mb-4 sm:mb-6 w-full max-w-6xl mx-auto overflow-x-auto">
             <div
               id="scheduler-container"
-              className="h-[600px] sm:h-[650px] md:h-[700px] w-full"
+              className="min-h-[700px] w-full"
+              style={{ minWidth: "900px" }}
             />
           </div>
 
