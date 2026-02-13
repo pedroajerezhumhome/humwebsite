@@ -3,7 +3,6 @@
 
 import { useState, useEffect } from "react";
 import { submitToMaropost } from "../actions";
-import Script from "next/script";
 
 export default function Home() {
   const [email, setEmail] = useState("");
@@ -22,6 +21,28 @@ export default function Home() {
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Load Scheduler.ai - create iframe directly for full width control
+  useEffect(() => {
+    const container = document.getElementById("scheduler-container");
+    if (!container) return;
+
+    // Check if iframe already exists (handles React strict mode)
+    if (document.getElementById("scheduler-iframe")) return;
+
+    const iframe = document.createElement("iframe");
+    iframe.src = "https://app.scheduler.ai/book_meeting/?poolID=73b74168-a87e-4c70-a140-cb2161e112f4&embedded=true&embed=true&hideLogo=true&hide_logo=true";
+    iframe.id = "scheduler-iframe";
+    iframe.title = "Scheduler.ai Booking Form";
+    iframe.allow = "fullscreen";
+    iframe.setAttribute("scrolling", "yes");
+    iframe.setAttribute("frameborder", "0");
+    iframe.setAttribute("allowtransparency", "true");
+    iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox");
+    iframe.style.cssText = "width: 100%; min-width: 900px; height: 700px; min-height: 600px; border: none; overflow: auto; display: block; background: transparent;";
+
+    container.appendChild(iframe);
   }, []);
 
   const cities = [
@@ -545,13 +566,12 @@ export default function Home() {
             Book a free call with our team.
           </p>
 
-          {/* iClosed Widget */}
-          <div className="mb-12 sm:mb-20 w-full max-w-3xl lg:max-w-6xl mx-auto [overflow-anchor:none]">
+          {/* Scheduler.ai Widget */}
+          <div className="mb-12 sm:mb-20 w-full max-w-6xl mx-auto overflow-x-auto">
             <div
-              className="iclosed-widget min-h-[580px] sm:min-h-[620px] sm:h-[620px]"
-              data-url="https://app.iclosed.io/e/hum/hum-household-assessment"
-              title="HUM Household Assessment"
-              style={{ width: "100%" }}
+              id="scheduler-container"
+              className="min-h-[700px] w-full"
+              style={{ minWidth: "900px" }}
             />
           </div>
 
@@ -662,9 +682,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-
-      {/* iClosed Widget Script */}
-      <Script src="https://app.iclosed.io/assets/widget.js" strategy="lazyOnload" />
     </div>
   );
 }
