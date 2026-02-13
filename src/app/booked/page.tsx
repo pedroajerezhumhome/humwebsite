@@ -45,7 +45,8 @@ function useBookingDetails() {
 
   useEffect(() => {
     // Support both old params and new Scheduler.ai params
-    const eventStartTime = searchParams.get("event_start_time") || searchParams.get("start_time");
+    // Scheduler.ai now sends meeting_start in ISO format (e.g., 2026-02-13T17:30:00-06:00)
+    const eventStartTime = searchParams.get("meeting_start") || searchParams.get("event_start_time") || searchParams.get("start_time");
     const timeZone = searchParams.get("timeZone") || searchParams.get("timezone") || searchParams.get("user_timezone") || "America/Chicago";
     const assignedToParam = searchParams.get("assigned_to");
     // Scheduler.ai uses "name" or "user_name" instead of "invitee_full_name"
