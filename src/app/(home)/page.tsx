@@ -565,12 +565,12 @@ export default function Home() {
           <h2 className="text-[30px] sm:text-[44px] md:text-[56px] font-semibold text-[#454545] leading-tight mb-4">
             Ready to stop managing?
           </h2>
-          <p className="text-base sm:text-xl md:text-2xl text-[#454545] mb-4 sm:mb-6 max-w-2xl mx-auto">
+          <p className="text-base sm:text-xl md:text-2xl text-[#454545] mb-2 sm:mb-3 max-w-2xl mx-auto">
             Book a free call with our team.
           </p>
 
           {/* Scheduler.ai Widget */}
-          <div className="mb-8 sm:mb-12 w-full max-w-6xl mx-auto overflow-x-auto">
+          <div className="mb-6 sm:mb-8 w-full max-w-6xl mx-auto overflow-x-auto">
             <div
               id="scheduler-container"
               className="min-h-[700px] w-full"
