@@ -40,7 +40,7 @@ export default function Home() {
     iframe.setAttribute("frameborder", "0");
     iframe.setAttribute("allowtransparency", "true");
     iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox");
-    iframe.style.cssText = "width: 100%; min-width: 900px; height: 700px; min-height: 600px; border: none; overflow: auto; display: block; background: transparent;";
+    iframe.style.cssText = "width: 900px; height: 700px; border: none; overflow: auto; display: block; background: transparent;";
 
     container.appendChild(iframe);
   }, []);
