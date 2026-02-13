@@ -294,19 +294,10 @@ export default function Home() {
         <div className="max-w-4xl mx-auto text-center">
           {/* Trusted by moms badge */}
           <div className="inline-flex items-center gap-2.5 border border-[#e0dbd4] rounded-full px-5 py-2 mb-8 sm:mb-12">
-            <div className="flex items-center gap-1">
-              {[...Array(5)].map((_, i) => (
-                <svg
-                  key={i}
-                  width="14"
-                  height="12"
-                  viewBox="0 0 16 14"
-                  fill="#c4a67d"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M8 14s-5.5-3.5-7-7C-.5 3.5.5 0 3.5 0 5 0 6.5 1 8 2.5 9.5 1 11 0 12.5 0c3 0 4 3.5 2.5 7-1.5 3.5-7 7-7 7z" />
-                </svg>
-              ))}
+            <div className="flex items-center gap-1.5">
+              <svg width="16" height="15" viewBox="0 0 24 22" fill="#d4c5a9"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              <svg width="16" height="15" viewBox="0 0 24 22" fill="#c4a97d"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              <svg width="16" height="15" viewBox="0 0 24 22" fill="#b8926b"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
             </div>
             <span className="text-sm sm:text-base text-[#777] font-medium">Trusted by moms</span>
           </div>
@@ -578,12 +569,12 @@ export default function Home() {
           <h2 className="text-[30px] sm:text-[44px] md:text-[56px] font-semibold text-[#454545] leading-tight mb-4">
             Ready to stop managing?
           </h2>
-          <p className="text-base sm:text-xl md:text-2xl text-[#454545] mb-2 max-w-2xl mx-auto">
+          <p className="text-base sm:text-xl md:text-2xl text-[#454545] mb-0 max-w-2xl mx-auto">
             Book a free call with our team.
           </p>
 
           {/* Scheduler.ai Widget */}
-          <div className="mb-3 sm:mb-4 w-full max-w-6xl mx-auto overflow-x-auto">
+          <div className="mb-2 w-full max-w-6xl mx-auto overflow-x-auto">
             <div
               id="scheduler-container"
               className="min-h-[700px] w-full"
