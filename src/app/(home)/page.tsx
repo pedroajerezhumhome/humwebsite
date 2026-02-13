@@ -292,29 +292,32 @@ export default function Home() {
       {/* Hero Section */}
       <section className="min-h-screen flex items-center justify-center px-4 relative">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-[30px] sm:text-[56px] md:text-[72px] font-semibold text-[#454545] leading-[1.1] tracking-tight mb-4 sm:mb-6">
-            Your home on autopilot.<br />
-            <span className="text-[#888]">No managing. No thinking.</span>
-          </h1>
-          <p className="text-base sm:text-xl md:text-2xl text-[#454545] max-w-2xl mx-auto mb-8 sm:mb-12 leading-relaxed">
-            For moms who hired help and still carry everything. HUM builds your
-            household system, trains a professional to run it, and stays involved
-            so you don&apos;t have to.
-          </p>
-          <div className="flex flex-col items-center gap-4">
-            <button
-              onClick={() => scrollToSection("cta")}
-              className="px-6 sm:px-8 py-3 sm:py-4 bg-[#1a1a1a] text-white hover:bg-black font-medium rounded-full transition-colors text-sm sm:text-lg"
-            >
-              Book a Free Assessment
-            </button>
-            <button
-              onClick={() => scrollToSection("waitlist")}
-              className="text-sm sm:text-base text-[#888] hover:text-[#454545] transition-colors underline underline-offset-4"
-            >
-              or stay in the loop
-            </button>
+          {/* Trusted by moms badge */}
+          <div className="inline-flex items-center gap-2 border border-[#e0dbd4] rounded-full px-5 py-2 mb-8 sm:mb-12">
+            <span className="text-[#c4a97d] text-base sm:text-lg">&#x1F90D;&#x1F90D;&#x1F90D;</span>
+            <span className="text-sm sm:text-base text-[#888] font-medium">Trusted by moms</span>
           </div>
+
+          <h1 className="text-[36px] sm:text-[60px] md:text-[76px] font-semibold text-[#454545] leading-[1.08] tracking-tight mb-2 sm:mb-3">
+            Your home on autopilot.
+          </h1>
+          <h2 className="text-[36px] sm:text-[60px] md:text-[76px] font-semibold text-[#c4a97d] leading-[1.08] tracking-tight mb-8 sm:mb-10">
+            No lists. No reminders.<br />
+            No mental load.
+          </h2>
+
+          <p className="text-base sm:text-lg md:text-xl text-[#888] max-w-2xl mx-auto mb-8 sm:mb-12 leading-relaxed">
+            HUM builds your household operating system, finds and trains your
+            perfect house manager to run it, and stays involved until it actually
+            works so you don&apos;t have to.
+          </p>
+
+          <button
+            onClick={() => scrollToSection("cta")}
+            className="px-8 sm:px-10 py-4 sm:py-5 bg-[#1a1a1a] text-white hover:bg-black font-medium rounded-full transition-colors text-sm sm:text-lg"
+          >
+            See If HUM Is Right for You
+          </button>
         </div>
       </section>
 
@@ -562,12 +565,12 @@ export default function Home() {
           <h2 className="text-[30px] sm:text-[44px] md:text-[56px] font-semibold text-[#454545] leading-tight mb-4">
             Ready to stop managing?
           </h2>
-          <p className="text-base sm:text-xl md:text-2xl text-[#454545] mb-8 sm:mb-12 max-w-2xl mx-auto">
+          <p className="text-base sm:text-xl md:text-2xl text-[#454545] mb-4 sm:mb-6 max-w-2xl mx-auto">
             Book a free call with our team.
           </p>
 
           {/* Scheduler.ai Widget */}
-          <div className="mb-12 sm:mb-20 w-full max-w-6xl mx-auto overflow-x-auto">
+          <div className="mb-8 sm:mb-12 w-full max-w-6xl mx-auto overflow-x-auto">
             <div
               id="scheduler-container"
               className="min-h-[700px] w-full"
