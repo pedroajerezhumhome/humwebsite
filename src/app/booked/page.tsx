@@ -30,6 +30,9 @@ function useBookingDetails() {
     timeZone: string;
     assignedTo: string;
     inviteeName: string;
+    email: string;
+    phone: string;
+    duration: string;
     month: string;
     monthShort: string;
     day: number;
@@ -41,23 +44,15 @@ function useBookingDetails() {
   } | null>(null);
 
   useEffect(() => {
-    const eventStartTime = searchParams.get("event_start_time");
-    const timeZone = searchParams.get("timeZone") || "America/Chicago";
+    // Support both old params and new Scheduler.ai params
+    const eventStartTime = searchParams.get("event_start_time") || searchParams.get("start_time");
+    const timeZone = searchParams.get("timeZone") || searchParams.get("timezone") || searchParams.get("user_timezone") || "America/Chicago";
     const assignedToParam = searchParams.get("assigned_to");
-    const inviteeFullName = searchParams.get("invitee_full_name");
-
-    if (!eventStartTime) {
-      setDetails(null);
-      return;
-    }
-
-    const decodedTime = decodeURIComponent(eventStartTime);
-    const targetDate = new Date(decodedTime);
-
-    if (isNaN(targetDate.getTime())) {
-      setDetails(null);
-      return;
-    }
+    // Scheduler.ai uses "name" or "user_name" instead of "invitee_full_name"
+    const inviteeFullName = searchParams.get("invitee_full_name") || searchParams.get("name") || searchParams.get("user_name");
+    const email = searchParams.get("email") || searchParams.get("user_email") || "";
+    const phone = searchParams.get("phone") || searchParams.get("user_phone") || "";
+    const duration = searchParams.get("duration") || "";
 
     const decodedTimeZone = decodeURIComponent(timeZone);
     const assignedTo = assignedToParam
@@ -66,6 +61,52 @@ function useBookingDetails() {
     const inviteeName = inviteeFullName
       ? decodeURIComponent(inviteeFullName).replace(/\+/g, " ").trim()
       : "";
+
+    // If no event start time, still return details with what we have
+    if (!eventStartTime) {
+      setDetails({
+        targetDate: null,
+        timeZone: decodedTimeZone,
+        assignedTo,
+        inviteeName,
+        email: decodeURIComponent(email),
+        phone: decodeURIComponent(phone),
+        duration,
+        month: "",
+        monthShort: "",
+        day: 0,
+        weekday: "",
+        weekdayShort: "",
+        time: "",
+        tzAbbrev: "",
+        formattedDateTime: "Check your email for details",
+      });
+      return;
+    }
+
+    const decodedTime = decodeURIComponent(eventStartTime);
+    const targetDate = new Date(decodedTime);
+
+    if (isNaN(targetDate.getTime())) {
+      setDetails({
+        targetDate: null,
+        timeZone: decodedTimeZone,
+        assignedTo,
+        inviteeName,
+        email: decodeURIComponent(email),
+        phone: decodeURIComponent(phone),
+        duration,
+        month: "",
+        monthShort: "",
+        day: 0,
+        weekday: "",
+        weekdayShort: "",
+        time: "",
+        tzAbbrev: "",
+        formattedDateTime: "Check your email for details",
+      });
+      return;
+    }
 
     const weekday = targetDate.toLocaleDateString("en-US", {
       weekday: "long",
@@ -111,6 +152,9 @@ function useBookingDetails() {
       timeZone: decodedTimeZone,
       assignedTo,
       inviteeName,
+      email: decodeURIComponent(email),
+      phone: decodeURIComponent(phone),
+      duration,
       month,
       monthShort,
       day,
