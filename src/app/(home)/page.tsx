@@ -572,7 +572,6 @@ export default function Home() {
             <div
               id="demo-scheduler-container"
               className="min-h-[700px] w-full"
-              style={{ minWidth: "900px" }}
             />
           </div>
 
