@@ -23,26 +23,24 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Load Scheduler.ai - create iframe directly for full width control
+  // Load Scheduler.ai - official script embed
   useEffect(() => {
-    const container = document.getElementById("scheduler-container");
-    if (!container) return;
+    // Check if script already exists (handles React strict mode)
+    if (document.getElementById("scheduler-script")) return;
 
-    // Check if iframe already exists (handles React strict mode)
-    if (document.getElementById("scheduler-iframe")) return;
+    const script = document.createElement("script");
+    script.src = "https://app.scheduler.ai/scheduler-embed.js";
+    script.id = "scheduler-script";
+    script.setAttribute("data-pool-id", "73b74168-a87e-4c70-a140-cb2161e112f4");
+    script.setAttribute("data-container-id", "demo-scheduler-container");
+    script.setAttribute("data-hide-logo", "true");
 
-    const iframe = document.createElement("iframe");
-    iframe.src = "https://app.scheduler.ai/book_meeting/?poolID=73b74168-a87e-4c70-a140-cb2161e112f4&embedded=true&embed=true&hideLogo=true&hide_logo=true";
-    iframe.id = "scheduler-iframe";
-    iframe.title = "Scheduler.ai Booking Form";
-    iframe.allow = "fullscreen";
-    iframe.setAttribute("scrolling", "yes");
-    iframe.setAttribute("frameborder", "0");
-    iframe.setAttribute("allowtransparency", "true");
-    iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox");
-    iframe.style.cssText = "width: 900px; height: 700px; border: none; overflow: auto; display: block; background: transparent;";
+    document.body.appendChild(script);
 
-    container.appendChild(iframe);
+    return () => {
+      const existingScript = document.getElementById("scheduler-script");
+      if (existingScript) existingScript.remove();
+    };
   }, []);
 
   const cities = [
@@ -572,7 +570,7 @@ export default function Home() {
           {/* Scheduler.ai Widget */}
           <div className="mb-2 w-full max-w-6xl mx-auto overflow-x-auto">
             <div
-              id="scheduler-container"
+              id="demo-scheduler-container"
               className="min-h-[700px] w-full"
               style={{ minWidth: "900px" }}
             />
