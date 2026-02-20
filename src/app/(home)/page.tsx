@@ -594,6 +594,7 @@ export default function Home() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
+                      data-nb="true"
                       className="flex-1 px-4 sm:px-5 py-3 sm:py-4 rounded-full border border-[#d5d0c8] bg-white text-[#323B46] placeholder-[#999] focus:outline-none focus:border-[#666] transition-colors text-sm sm:text-base"
                     />
                     <select

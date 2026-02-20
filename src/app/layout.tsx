@@ -115,6 +115,23 @@ export default function RootLayout({
           })
           spiffy.load("humhome", "secure.humhome.co");
         `}</Script>
+        <Script id="neverbounce-settings" strategy="afterInteractive">{`
+          _NBSettings = {
+            apiKey: 'public_03f1510969fd6666b4d242ddf5f82e10',
+            blockFormSubmission: true,
+            feedbackColors: {
+              valid: '#28a745',
+              invalid: '#dc3545',
+              catchall: '#ffc107',
+              unknown: '#6c757d'
+            },
+            displayPoweredBy: false
+          };
+        `}</Script>
+        <Script
+          src="https://cdn.neverbounce.com/widget/dist/NeverBounce.js"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
