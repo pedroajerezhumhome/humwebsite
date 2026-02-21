@@ -131,12 +131,41 @@ export default function DancingWithYourDaughtersPage() {
     audio.currentTime = Math.min(duration, audio.currentTime + 15);
   };
 
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseFloat(e.target.value);
-    setVolume(newVolume);
+  const handleVolumeChange = (newVolume: number) => {
+    const clamped = Math.max(0, Math.min(1, newVolume));
+    setVolume(clamped);
     if (audioRef.current) {
-      audioRef.current.volume = newVolume;
+      audioRef.current.volume = clamped;
     }
+  };
+
+  const handleVolumeTrackClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const track = e.currentTarget;
+    const rect = track.getBoundingClientRect();
+    const clickY = e.clientY - rect.top;
+    const newVolume = 1 - clickY / rect.height;
+    handleVolumeChange(newVolume);
+  };
+
+  const handleVolumeThumbDrag = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const track = e.currentTarget.parentElement;
+    if (!track) return;
+    const rect = track.getBoundingClientRect();
+
+    const onMove = (moveEvent: MouseEvent) => {
+      const clickY = moveEvent.clientY - rect.top;
+      const newVolume = 1 - clickY / rect.height;
+      handleVolumeChange(newVolume);
+    };
+
+    const onUp = () => {
+      document.removeEventListener("mousemove", onMove);
+      document.removeEventListener("mouseup", onUp);
+    };
+
+    document.addEventListener("mousemove", onMove);
+    document.addEventListener("mouseup", onUp);
   };
 
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
@@ -415,71 +444,52 @@ export default function DancingWithYourDaughtersPage() {
           bottom: 100%;
           left: 50%;
           transform: translateX(-50%);
-          height: 0;
-          overflow: hidden;
-          transition: height 0.2s ease, padding 0.2s ease;
+          opacity: 0;
+          visibility: hidden;
+          transition: opacity 0.2s ease, visibility 0.2s ease;
+          width: 32px;
+          height: 90px;
+          background: #fff;
+          border-radius: 16px;
+          box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+          margin-bottom: 8px;
           display: flex;
+          align-items: center;
           justify-content: center;
-          padding: 0;
-          background: rgba(255, 255, 255, 0.95);
-          border-radius: 8px;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .volume-control:hover .volume-slider-wrapper {
-          height: 80px;
-          padding: 12px 8px;
-          margin-bottom: 8px;
+          opacity: 1;
+          visibility: visible;
         }
 
-        .volume-slider {
+        .volume-track {
+          position: relative;
           width: 4px;
           height: 60px;
-          -webkit-appearance: none;
-          appearance: none;
-          background: transparent;
+          background: rgba(0, 0, 0, 0.12);
           border-radius: 2px;
-          outline: none;
           cursor: pointer;
         }
 
-        .volume-slider::-webkit-slider-runnable-track {
-          width: 4px;
-          height: 60px;
-          background: rgba(0, 0, 0, 0.15);
+        .volume-fill {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          background: #1a1a1a;
           border-radius: 2px;
         }
 
-        .volume-slider::-webkit-slider-thumb {
-          -webkit-appearance: none;
-          appearance: none;
-          width: 14px;
-          height: 14px;
+        .volume-thumb {
+          position: absolute;
+          left: 50%;
+          transform: translate(-50%, 50%);
+          width: 12px;
+          height: 12px;
           background: #1a1a1a;
           border-radius: 50%;
           cursor: pointer;
-          margin-left: -5px;
-        }
-
-        .volume-slider::-moz-range-track {
-          width: 4px;
-          height: 60px;
-          background: rgba(0, 0, 0, 0.15);
-          border-radius: 2px;
-        }
-
-        .volume-slider::-moz-range-thumb {
-          width: 14px;
-          height: 14px;
-          background: #1a1a1a;
-          border-radius: 50%;
-          cursor: pointer;
-          border: none;
-        }
-
-        .volume-slider::-moz-range-progress {
-          background: #1a1a1a;
-          border-radius: 2px;
         }
 
         /* Logo - Top Left */
@@ -700,16 +710,25 @@ export default function DancingWithYourDaughtersPage() {
                   )}
                 </svg>
                 <div className="volume-slider-wrapper">
-                  <input
-                    type="range"
-                    className="volume-slider"
-                    min="0"
-                    max="1"
-                    step="0.01"
-                    value={volume}
-                    onChange={handleVolumeChange}
+                  <div
+                    className="volume-track"
+                    onClick={handleVolumeTrackClick}
+                    role="slider"
                     aria-label="Volume"
-                  />
+                    aria-valuenow={Math.round(volume * 100)}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                  >
+                    <div
+                      className="volume-fill"
+                      style={{ height: `${volume * 100}%` }}
+                    />
+                    <div
+                      className="volume-thumb"
+                      style={{ top: `${(1 - volume) * 100}%` }}
+                      onMouseDown={handleVolumeThumbDrag}
+                    />
+                  </div>
                 </div>
               </div>
             </div>

@@ -222,10 +222,10 @@ function CountdownTimer() {
   return (
     <section className="px-4 pt-2 pb-10 sm:pt-4 sm:pb-16 bg-[#fefdfb]">
       <div className="max-w-[560px] mx-auto">
-        <div className="bg-[#ebe6df] rounded-2xl sm:rounded-3xl px-6 py-8 sm:px-10 sm:py-10 text-center">
+        <div className="bg-[#f5f0e8] rounded-2xl sm:rounded-3xl px-6 py-8 sm:px-10 sm:py-10 text-center transition-all duration-300 hover:shadow-lg animate-on-load animate-fade-in-up animation-delay-300">
           {status === "counting" && (
             <>
-              <p className="text-[14px] sm:text-[18px] text-[#555] mb-4 sm:mb-6">
+              <p className="text-[16px] sm:text-[18px] text-[#555] mb-4 sm:mb-6">
                 Your consultation is in:
               </p>
 
@@ -235,7 +235,7 @@ function CountdownTimer() {
                   <span className="text-[26px] sm:text-[46px] font-semibold text-[#323B46] leading-none">
                     {countdown.days}
                   </span>
-                  <span className="text-[10px] sm:text-[12px] uppercase tracking-[0.1em] text-[#888] mt-1">
+                  <span className="text-[11px] sm:text-[12px] uppercase tracking-[0.1em] text-[#888] mt-1">
                     days
                   </span>
                 </div>
@@ -243,7 +243,7 @@ function CountdownTimer() {
                   <span className="text-[26px] sm:text-[46px] font-semibold text-[#323B46] leading-none">
                     {countdown.hours}
                   </span>
-                  <span className="text-[10px] sm:text-[12px] uppercase tracking-[0.1em] text-[#888] mt-1">
+                  <span className="text-[11px] sm:text-[12px] uppercase tracking-[0.1em] text-[#888] mt-1">
                     hours
                   </span>
                 </div>
@@ -251,7 +251,7 @@ function CountdownTimer() {
                   <span className="text-[26px] sm:text-[46px] font-semibold text-[#323B46] leading-none">
                     {countdown.minutes}
                   </span>
-                  <span className="text-[10px] sm:text-[12px] uppercase tracking-[0.1em] text-[#888] mt-1">
+                  <span className="text-[11px] sm:text-[12px] uppercase tracking-[0.1em] text-[#888] mt-1">
                     minutes
                   </span>
                 </div>
@@ -259,7 +259,7 @@ function CountdownTimer() {
                   <span className="text-[26px] sm:text-[46px] font-semibold text-[#323B46] leading-none">
                     {countdown.seconds}
                   </span>
-                  <span className="text-[10px] sm:text-[12px] uppercase tracking-[0.1em] text-[#888] mt-1">
+                  <span className="text-[11px] sm:text-[12px] uppercase tracking-[0.1em] text-[#888] mt-1">
                     seconds
                   </span>
                 </div>
@@ -274,13 +274,13 @@ function CountdownTimer() {
           )}
 
           {status === "passed" && (
-            <p className="text-[14px] sm:text-[18px] text-[#555] mb-4 sm:mb-6">
+            <p className="text-[16px] sm:text-[18px] text-[#555] mb-4 sm:mb-6">
               Your call was scheduled for:
             </p>
           )}
 
           {/* Date/Time Display */}
-          <p className="text-[14px] sm:text-[18px] text-[#323B46]">
+          <p className="text-[16px] sm:text-[18px] text-[#323B46]">
             {formattedDateTime}
           </p>
         </div>
@@ -302,7 +302,7 @@ function DynamicCalendarCard() {
   const inviteeName = bookingDetails?.inviteeName || "";
 
   return (
-    <div className="bg-[#fefdfb] rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6">
+    <div className="bg-[#fefdfb] rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
       <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
         {/* Calendar Icon */}
         <div className="flex-shrink-0 self-center sm:self-start">
@@ -324,7 +324,7 @@ function DynamicCalendarCard() {
           <h4 className="font-bold text-[14px] sm:text-[17px] text-[#323B46] mb-2 sm:mb-3">
             Your HUM Consultation Is Booked
           </h4>
-          <div className="space-y-1 sm:space-y-1.5 text-[12px] sm:text-[14px]">
+          <div className="space-y-1 sm:space-y-1.5 text-[14px] sm:text-[15px]">
             <div className="flex">
               <span className="text-[#888] w-12 sm:w-14 flex-shrink-0">When</span>
               <span className="text-[#555]">{formattedDateTime}</span>
@@ -347,16 +347,16 @@ function DynamicCalendarCard() {
 
           {/* RSVP Buttons */}
           <div className="flex gap-1.5 sm:gap-2 mt-3 sm:mt-4">
-            <button className="flex items-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 bg-[#6b8e5e] text-white text-[11px] sm:text-[13px] font-medium rounded-lg">
+            <button className="flex items-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-2.5 sm:py-3 bg-[#6b8e5e] text-white text-[12px] sm:text-[13px] font-medium rounded-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6b8e5e] focus-visible:ring-offset-2">
               <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
               Yes
             </button>
-            <button className="px-3 sm:px-4 py-1.5 sm:py-2 bg-white border border-[#ddd] text-[#555] text-[11px] sm:text-[13px] font-medium rounded-lg">
+            <button className="px-3 sm:px-4 py-2.5 sm:py-3 bg-white border border-[#ddd] text-[#555] text-[12px] sm:text-[13px] font-medium rounded-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-[#bbb] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b8926b] focus-visible:ring-offset-2">
               Maybe
             </button>
-            <button className="px-3 sm:px-4 py-1.5 sm:py-2 bg-white border border-[#ddd] text-[#555] text-[11px] sm:text-[13px] font-medium rounded-lg">
+            <button className="px-3 sm:px-4 py-2.5 sm:py-3 bg-white border border-[#ddd] text-[#555] text-[12px] sm:text-[13px] font-medium rounded-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-[#bbb] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b8926b] focus-visible:ring-offset-2">
               No
             </button>
           </div>
@@ -441,7 +441,7 @@ function AudioPlayer() {
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
-    <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm">
+    <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm transition-all duration-300 hover:shadow-lg">
       {/* Hidden audio element */}
       <audio
         ref={audioRef}
@@ -467,7 +467,7 @@ function AudioPlayer() {
           <h4 className="font-semibold text-[14px] sm:text-[16px] text-[#1a1a1a]">
             Dancing With Your Daughters
           </h4>
-          <p className="text-[11px] sm:text-[13px] text-[#666]">The song behind the mission</p>
+          <p className="text-[12px] sm:text-[13px] text-[#666]">The song behind the mission</p>
         </div>
       </div>
 
@@ -476,7 +476,7 @@ function AudioPlayer() {
         {/* Play/Pause Button */}
         <button
           onClick={togglePlay}
-          className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black hover:bg-[#333] flex items-center justify-center flex-shrink-0 transition-colors"
+          className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-black flex items-center justify-center flex-shrink-0 transition-all duration-200 hover:bg-[#333] hover:scale-110 hover:shadow-lg active:scale-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b8926b] focus-visible:ring-offset-2"
           aria-label={isPlaying ? "Pause" : "Play"}
         >
           {isPlaying ? (
@@ -521,10 +521,10 @@ function AudioPlayer() {
 
           {/* Time Display */}
           <div className="flex justify-between mt-1">
-            <span className="text-[10px] sm:text-[11px] text-[#666] tabular-nums">
+            <span className="text-[11px] sm:text-[12px] text-[#666] tabular-nums">
               {formatTime(currentTime)}
             </span>
-            <span className="text-[10px] sm:text-[11px] text-[#666] tabular-nums">
+            <span className="text-[11px] sm:text-[12px] text-[#666] tabular-nums">
               {formatTime(duration)}
             </span>
           </div>
@@ -560,7 +560,7 @@ function AudioPlayer() {
       </div>
 
       {/* Privacy Note */}
-      <p className="text-[10px] sm:text-[11px] text-[#999] text-center mt-4 italic">
+      <p className="text-[12px] sm:text-[13px] text-[#777] text-center mt-4 italic">
         This song is shared with you personally. Please don&apos;t distribute.
       </p>
     </div>
@@ -580,12 +580,12 @@ function PersonalizedHero() {
     <section className="px-4 pt-4 pb-6 sm:pt-8 sm:pb-12 bg-[#fefdfb]">
       <div className="max-w-2xl mx-auto text-center">
         {/* Top Label */}
-        <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-[#b8926b] mb-4 sm:mb-6">
+        <p className="text-[11px] sm:text-[12px] uppercase tracking-[0.2em] text-[#b8926b] mb-4 sm:mb-6 animate-on-load animate-fade-in-up">
           CALL SCHEDULED
         </p>
 
         {/* Main Headline */}
-        <h1 className="text-[28px] sm:text-[44px] md:text-[52px] font-semibold text-[#323B46] leading-[1.15] tracking-tight mb-3 sm:mb-5">
+        <h1 className="text-[28px] sm:text-[44px] md:text-[52px] font-semibold text-[#323B46] leading-[1.15] tracking-tight mb-3 sm:mb-5 animate-on-load animate-fade-in-up animation-delay-100">
           {firstName ? (
             <>Congratulations {firstName},<br />You&apos;re Booked!</>
           ) : (
@@ -594,7 +594,7 @@ function PersonalizedHero() {
         </h1>
 
         {/* Description */}
-        <p className="text-[14px] sm:text-[20px] text-[#555] max-w-xl mx-auto mb-4 sm:mb-8 leading-relaxed px-2 sm:px-0">
+        <p className="text-[16px] sm:text-[20px] text-[#555] max-w-xl mx-auto mb-4 sm:mb-8 leading-relaxed px-2 sm:px-0 animate-on-load animate-fade-in-up animation-delay-200">
           Your life is about to get a whole lot easier. All the details for your upcoming call are on their way to your inbox and phone. But first, please review the important materials below.
         </p>
       </div>
@@ -630,7 +630,7 @@ export default function BookedPage() {
       {/* ===================================================================
           WHAT HAPPENS NEXT - Timeline Section
       =================================================================== */}
-      <section className="px-4 py-8 sm:py-16 bg-[#f8f6f2]">
+      <section className="px-4 py-8 sm:py-16 bg-[#f5f0e8]">
         <div className="max-w-4xl mx-auto">
           {/* Section Header */}
           <h2 className="text-[26px] sm:text-[36px] md:text-[42px] font-semibold text-[#323B46] leading-tight mb-8 sm:mb-12 text-center">
@@ -647,52 +647,52 @@ export default function BookedPage() {
               <div className="grid grid-cols-4 gap-4">
                 {/* Step 1 - TODAY (highlighted) */}
                 <div className="flex flex-col items-center text-center">
-                  <div className="w-8 h-8 rounded-full bg-[#b8926b] flex items-center justify-center mb-4 relative z-10 ring-4 ring-[#f8f6f2]">
+                  <div className="w-8 h-8 rounded-full bg-[#b8926b] flex items-center justify-center mb-4 relative z-10 ring-4 ring-[#f5f0e8]">
                     <span className="text-white text-sm font-semibold">1</span>
                   </div>
-                  <p className="text-[11px] uppercase tracking-[0.15em] font-semibold text-[#b8926b] mb-2">
+                  <p className="text-[12px] uppercase tracking-[0.15em] font-semibold text-[#b8926b] mb-2">
                     TODAY
                   </p>
-                  <p className="text-[14px] text-[#555] leading-relaxed">
+                  <p className="text-[15px] sm:text-[15px] text-[#555] leading-relaxed">
                     Complete the two steps below, accept your calendar invite and read your pre-call guide
                   </p>
                 </div>
 
                 {/* Step 2 - Before Your Call */}
                 <div className="flex flex-col items-center text-center">
-                  <div className="w-8 h-8 rounded-full bg-[#d4ccc0] flex items-center justify-center mb-4 relative z-10 ring-4 ring-[#f8f6f2]">
+                  <div className="w-8 h-8 rounded-full bg-[#d4ccc0] flex items-center justify-center mb-4 relative z-10 ring-4 ring-[#f5f0e8]">
                     <span className="text-white text-sm font-semibold">2</span>
                   </div>
-                  <p className="text-[11px] uppercase tracking-[0.15em] font-semibold text-[#888] mb-2">
+                  <p className="text-[12px] uppercase tracking-[0.15em] font-semibold text-[#888] mb-2">
                     BEFORE YOUR CALL
                   </p>
-                  <p className="text-[14px] text-[#555] leading-relaxed">
+                  <p className="text-[15px] sm:text-[15px] text-[#555] leading-relaxed">
                     Hope, our AI assistant, will call to ask a few questions so we&apos;re fully prepared and your time on the call is well spent
                   </p>
                 </div>
 
                 {/* Step 3 - On The Call */}
                 <div className="flex flex-col items-center text-center">
-                  <div className="w-8 h-8 rounded-full bg-[#d4ccc0] flex items-center justify-center mb-4 relative z-10 ring-4 ring-[#f8f6f2]">
+                  <div className="w-8 h-8 rounded-full bg-[#d4ccc0] flex items-center justify-center mb-4 relative z-10 ring-4 ring-[#f5f0e8]">
                     <span className="text-white text-sm font-semibold">3</span>
                   </div>
-                  <p className="text-[11px] uppercase tracking-[0.15em] font-semibold text-[#888] mb-2">
+                  <p className="text-[12px] uppercase tracking-[0.15em] font-semibold text-[#888] mb-2">
                     ON THE CALL
                   </p>
-                  <p className="text-[14px] text-[#555] leading-relaxed">
+                  <p className="text-[15px] sm:text-[15px] text-[#555] leading-relaxed">
                     We&apos;ll talk through your situation and see if HUM is the right fit
                   </p>
                 </div>
 
                 {/* Step 4 - After */}
                 <div className="flex flex-col items-center text-center">
-                  <div className="w-8 h-8 rounded-full bg-[#d4ccc0] flex items-center justify-center mb-4 relative z-10 ring-4 ring-[#f8f6f2]">
+                  <div className="w-8 h-8 rounded-full bg-[#d4ccc0] flex items-center justify-center mb-4 relative z-10 ring-4 ring-[#f5f0e8]">
                     <span className="text-white text-sm font-semibold">4</span>
                   </div>
-                  <p className="text-[11px] uppercase tracking-[0.15em] font-semibold text-[#888] mb-2">
+                  <p className="text-[12px] uppercase tracking-[0.15em] font-semibold text-[#888] mb-2">
                     AFTER
                   </p>
-                  <p className="text-[14px] text-[#555] leading-relaxed">
+                  <p className="text-[15px] sm:text-[15px] text-[#555] leading-relaxed">
                     If it makes sense, we&apos;ll show you exactly how to get started
                   </p>
                 </div>
@@ -708,14 +708,14 @@ export default function BookedPage() {
 
               {/* Step 1 - TODAY (highlighted) */}
               <div className="relative pb-8">
-                <div className="absolute left-[-36px] w-8 h-8 rounded-full bg-[#b8926b] flex items-center justify-center ring-4 ring-[#f8f6f2]">
+                <div className="absolute left-[-36px] w-8 h-8 rounded-full bg-[#b8926b] flex items-center justify-center ring-4 ring-[#f5f0e8]">
                   <span className="text-white text-sm font-semibold">1</span>
                 </div>
                 <div className="pt-1">
-                  <p className="text-[11px] uppercase tracking-[0.15em] font-semibold text-[#b8926b] mb-1">
+                  <p className="text-[12px] uppercase tracking-[0.15em] font-semibold text-[#b8926b] mb-1">
                     TODAY
                   </p>
-                  <p className="text-[14px] text-[#555] leading-relaxed">
+                  <p className="text-[15px] sm:text-[15px] text-[#555] leading-relaxed">
                     Complete the two steps below, accept your calendar invite and read your pre-call guide
                   </p>
                 </div>
@@ -723,14 +723,14 @@ export default function BookedPage() {
 
               {/* Step 2 - Before Your Call */}
               <div className="relative pb-8">
-                <div className="absolute left-[-36px] w-8 h-8 rounded-full bg-[#d4ccc0] flex items-center justify-center ring-4 ring-[#f8f6f2]">
+                <div className="absolute left-[-36px] w-8 h-8 rounded-full bg-[#d4ccc0] flex items-center justify-center ring-4 ring-[#f5f0e8]">
                   <span className="text-white text-sm font-semibold">2</span>
                 </div>
                 <div className="pt-1">
-                  <p className="text-[11px] uppercase tracking-[0.15em] font-semibold text-[#888] mb-1">
+                  <p className="text-[12px] uppercase tracking-[0.15em] font-semibold text-[#888] mb-1">
                     BEFORE YOUR CALL
                   </p>
-                  <p className="text-[14px] text-[#555] leading-relaxed">
+                  <p className="text-[15px] sm:text-[15px] text-[#555] leading-relaxed">
                     Hope, our AI assistant, will call to ask a few questions so we&apos;re fully prepared and your time on the call is well spent
                   </p>
                 </div>
@@ -738,14 +738,14 @@ export default function BookedPage() {
 
               {/* Step 3 - On The Call */}
               <div className="relative pb-8">
-                <div className="absolute left-[-36px] w-8 h-8 rounded-full bg-[#d4ccc0] flex items-center justify-center ring-4 ring-[#f8f6f2]">
+                <div className="absolute left-[-36px] w-8 h-8 rounded-full bg-[#d4ccc0] flex items-center justify-center ring-4 ring-[#f5f0e8]">
                   <span className="text-white text-sm font-semibold">3</span>
                 </div>
                 <div className="pt-1">
-                  <p className="text-[11px] uppercase tracking-[0.15em] font-semibold text-[#888] mb-1">
+                  <p className="text-[12px] uppercase tracking-[0.15em] font-semibold text-[#888] mb-1">
                     ON THE CALL
                   </p>
-                  <p className="text-[14px] text-[#555] leading-relaxed">
+                  <p className="text-[15px] sm:text-[15px] text-[#555] leading-relaxed">
                     We&apos;ll talk through your situation and see if HUM is the right fit
                   </p>
                 </div>
@@ -753,14 +753,14 @@ export default function BookedPage() {
 
               {/* Step 4 - After */}
               <div className="relative">
-                <div className="absolute left-[-36px] w-8 h-8 rounded-full bg-[#d4ccc0] flex items-center justify-center ring-4 ring-[#f8f6f2]">
+                <div className="absolute left-[-36px] w-8 h-8 rounded-full bg-[#d4ccc0] flex items-center justify-center ring-4 ring-[#f5f0e8]">
                   <span className="text-white text-sm font-semibold">4</span>
                 </div>
                 <div className="pt-1">
-                  <p className="text-[11px] uppercase tracking-[0.15em] font-semibold text-[#888] mb-1">
+                  <p className="text-[12px] uppercase tracking-[0.15em] font-semibold text-[#888] mb-1">
                     AFTER
                   </p>
-                  <p className="text-[14px] text-[#555] leading-relaxed">
+                  <p className="text-[15px] sm:text-[15px] text-[#555] leading-relaxed">
                     If it makes sense, we&apos;ll show you exactly how to get started
                   </p>
                 </div>
@@ -776,7 +776,7 @@ export default function BookedPage() {
       <section className="px-4 py-8 sm:py-16 bg-[#fefdfb]">
         <div className="max-w-2xl mx-auto">
           {/* Section Header */}
-          <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-[#b8926b] mb-2 sm:mb-3 text-center">
+          <p className="text-[11px] sm:text-[12px] uppercase tracking-[0.2em] text-[#b8926b] mb-2 sm:mb-3 text-center">
             STEP 1: ACCEPT YOUR CALENDAR INVITE
           </p>
 
@@ -785,7 +785,7 @@ export default function BookedPage() {
           </h2>
 
           {/* Calendar Card */}
-          <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-sm">
+          <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
             <h3 className="text-[15px] sm:text-[20px] font-semibold text-[#323B46] mb-2">
               Click yes on the calendar invite that was sent to your email.
             </h3>
@@ -795,7 +795,7 @@ export default function BookedPage() {
               <DynamicCalendarCard />
             </Suspense>
 
-            <p className="text-[12px] sm:text-[14px] text-[#555] leading-relaxed">
+            <p className="text-[14px] sm:text-[15px] text-[#555] leading-relaxed">
               <span className="font-semibold">Why this matters:</span> Accepting your calendar invite ensures you have the appointment saved and you&apos;ll receive all the important details and reminders leading up to our call.
             </p>
           </div>
@@ -808,7 +808,7 @@ export default function BookedPage() {
       <section className="px-4 py-8 sm:py-16 bg-[#fefdfb]">
         <div className="max-w-2xl mx-auto text-center">
           {/* Section Header */}
-          <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-[#b8926b] mb-2 sm:mb-3">
+          <p className="text-[11px] sm:text-[12px] uppercase tracking-[0.2em] text-[#b8926b] mb-2 sm:mb-3">
             STEP 2: EVERYTHING YOU NEED TO KNOW
           </p>
 
@@ -818,8 +818,8 @@ export default function BookedPage() {
           </h2>
 
           {/* Download Card */}
-          <div className="bg-[#ebe6df] rounded-2xl sm:rounded-3xl p-6 sm:p-10">
-            <p className="text-[14px] sm:text-[20px] text-[#555] mb-5 sm:mb-8 leading-relaxed">
+          <div className="bg-[#f5f0e8] rounded-2xl sm:rounded-3xl p-6 sm:p-10 transition-all duration-300 hover:shadow-lg">
+            <p className="text-[16px] sm:text-[20px] text-[#555] mb-5 sm:mb-8 leading-relaxed">
               This guide contains everything you need to know to get the absolute most value from our call.
             </p>
 
@@ -827,7 +827,7 @@ export default function BookedPage() {
               href="https://slaw-floral-56242297.figma.site"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block px-6 sm:px-10 py-3.5 sm:py-4 bg-[#1a1a1a] text-white hover:bg-black font-medium rounded-full transition-colors text-sm sm:text-base"
+              className="inline-block px-6 sm:px-10 py-3.5 sm:py-4 bg-[#1a1a1a] text-white font-medium rounded-full text-sm sm:text-base transition-all duration-200 hover:bg-black hover:-translate-y-1 hover:shadow-xl hover:scale-[1.02] active:translate-y-0 active:scale-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b8926b] focus-visible:ring-offset-2"
             >
               Download the Pre-Call PDF
             </a>
@@ -878,7 +878,7 @@ export default function BookedPage() {
             </h2>
 
             {/* Letter content - standard font */}
-            <div className="relative text-[14px] sm:text-[17px] text-[#3d3d3d] leading-[1.8] sm:leading-[1.9] space-y-5 sm:space-y-6">
+            <div className="relative text-[16px] sm:text-[17px] text-[#3d3d3d] leading-[1.8] sm:leading-[1.9] space-y-5 sm:space-y-6">
               <p>
                 I wanted to take a moment to personally thank you for booking this call. I know how valuable your time is, and I don&apos;t take it lightly.
               </p>
@@ -888,7 +888,7 @@ export default function BookedPage() {
               </p>
 
               <p>
-                Before HUM was ever a company, before we had a single client or a team or a website, my life partner and best friend wrote a song. It&apos;s called <a href="#audio-player" className="text-[#b8926b] hover:underline">&ldquo;Dancing With Your Daughters.&rdquo;</a>
+                Before HUM was ever a company, before we had a single client or a team or a website, my life partner and best friend wrote a song. It&apos;s called <a href="#audio-player" className="text-[#b8926b] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b8926b] focus-visible:ring-offset-1 rounded-sm">&ldquo;Dancing With Your Daughters.&rdquo;</a>
               </p>
 
               <p>
@@ -966,7 +966,7 @@ export default function BookedPage() {
               </p>
 
               <p>
-                Here is <a href="#audio-player" className="text-[#b8926b] hover:underline">&ldquo;Dancing With Your Daughters.&rdquo;</a> It&apos;s never been shared publicly. I hope it moves you the way it moved me.
+                Here is <a href="#audio-player" className="text-[#b8926b] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b8926b] focus-visible:ring-offset-1 rounded-sm">&ldquo;Dancing With Your Daughters.&rdquo;</a> It&apos;s never been shared publicly. I hope it moves you the way it moved me.
               </p>
 
               <p>
@@ -1006,20 +1006,20 @@ export default function BookedPage() {
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
             <img src="/hum-logo.png" alt="HUM" className="h-5 sm:h-6 w-auto" />
             <div className="flex flex-wrap justify-center gap-x-4 sm:gap-x-6 gap-y-2">
-              <Link href="/privacy-policy" className="text-[10px] sm:text-xs text-[#999] hover:text-[#666] transition-colors">
+              <Link href="/privacy-policy" className="text-[12px] sm:text-[13px] text-[#666] hover:text-[#444] transition-colors">
                 Privacy Policy
               </Link>
-              <Link href="/terms-of-service" className="text-[10px] sm:text-xs text-[#999] hover:text-[#666] transition-colors">
+              <Link href="/terms-of-service" className="text-[12px] sm:text-[13px] text-[#666] hover:text-[#444] transition-colors">
                 Terms of Service
               </Link>
-              <Link href="/disclaimer" className="text-[10px] sm:text-xs text-[#999] hover:text-[#666] transition-colors">
+              <Link href="/disclaimer" className="text-[12px] sm:text-[13px] text-[#666] hover:text-[#444] transition-colors">
                 Disclaimer
               </Link>
-              <Link href="/cookie-policy" className="text-[10px] sm:text-xs text-[#999] hover:text-[#666] transition-colors">
+              <Link href="/cookie-policy" className="text-[12px] sm:text-[13px] text-[#666] hover:text-[#444] transition-colors">
                 Cookie Policy
               </Link>
             </div>
-            <p className="text-[10px] sm:text-xs text-[#bbb]">
+            <p className="text-[12px] sm:text-[13px] text-[#888]">
               © {new Date().getFullYear()} HUM
             </p>
           </div>
