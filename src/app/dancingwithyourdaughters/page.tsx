@@ -720,9 +720,9 @@ export default function DancingWithYourDaughtersPage() {
       </div>
 
       {/* Logo - Top Left */}
-      <div className="logo-container">
+      <a href="/" className="logo-container">
         <img src="/hum-logo-new.png" alt="HUM" className="logo" />
-      </div>
+      </a>
 
       {/* Footer */}
       <footer className="footer">
