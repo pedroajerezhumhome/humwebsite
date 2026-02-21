@@ -407,7 +407,7 @@ export default function DancingWithYourDaughtersPage() {
         }
 
         .volume-control:hover .volume-icon {
-          color: #c4907c;
+          color: #1a1a1a;
         }
 
         .volume-slider-wrapper {
@@ -450,7 +450,7 @@ export default function DancingWithYourDaughtersPage() {
           appearance: none;
           width: 14px;
           height: 14px;
-          background: #c4907c;
+          background: #1a1a1a;
           border-radius: 50%;
           cursor: pointer;
           transition: transform 0.15s ease;
@@ -463,7 +463,7 @@ export default function DancingWithYourDaughtersPage() {
         .volume-slider::-moz-range-thumb {
           width: 14px;
           height: 14px;
-          background: #c4907c;
+          background: #1a1a1a;
           border-radius: 50%;
           cursor: pointer;
           border: none;
