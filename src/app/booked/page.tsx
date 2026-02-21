@@ -9,7 +9,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useRef } from "react";
 
 // Helper function to get ordinal suffix for day
 function getOrdinalSuffix(day: number): string {
@@ -366,6 +366,207 @@ function DynamicCalendarCard() {
   );
 }
 
+// Audio Player Component for "Dancing With Your Daughters"
+function AudioPlayer() {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [volume, setVolume] = useState(1);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  // Format time in mm:ss
+  const formatTime = (time: number) => {
+    if (isNaN(time)) return "0:00";
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  };
+
+  const togglePlay = () => {
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  const handleTimeUpdate = () => {
+    if (audioRef.current) {
+      setCurrentTime(audioRef.current.currentTime);
+      // Also update duration here as fallback for m4a files
+      if (audioRef.current.duration && !isNaN(audioRef.current.duration) && audioRef.current.duration !== Infinity) {
+        setDuration(audioRef.current.duration);
+      }
+    }
+  };
+
+  const handleLoadedMetadata = () => {
+    if (audioRef.current && audioRef.current.duration && !isNaN(audioRef.current.duration) && audioRef.current.duration !== Infinity) {
+      setDuration(audioRef.current.duration);
+      setIsLoaded(true);
+    }
+  };
+
+  const handleCanPlay = () => {
+    if (audioRef.current && audioRef.current.duration && !isNaN(audioRef.current.duration) && audioRef.current.duration !== Infinity) {
+      setDuration(audioRef.current.duration);
+      setIsLoaded(true);
+    }
+  };
+
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const time = parseFloat(e.target.value);
+    if (audioRef.current) {
+      audioRef.current.currentTime = time;
+      setCurrentTime(time);
+    }
+  };
+
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const vol = parseFloat(e.target.value);
+    setVolume(vol);
+    if (audioRef.current) {
+      audioRef.current.volume = vol;
+    }
+  };
+
+  const handleEnded = () => {
+    setIsPlaying(false);
+    setCurrentTime(0);
+  };
+
+  const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
+
+  return (
+    <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm">
+      {/* Hidden audio element */}
+      <audio
+        ref={audioRef}
+        src="/audio/dancing-with-your-daughters.m4a"
+        preload="metadata"
+        onTimeUpdate={handleTimeUpdate}
+        onLoadedMetadata={handleLoadedMetadata}
+        onCanPlay={handleCanPlay}
+        onDurationChange={handleCanPlay}
+        onEnded={handleEnded}
+      />
+
+      {/* Song Title */}
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg overflow-hidden flex-shrink-0">
+          <img
+            src="/audio/cover-photo.png"
+            alt="Dancing With Your Daughters"
+            className="w-full h-full object-cover object-[center_10%]" style={{ transform: 'scaleX(-1) scale(1.2)' }}
+          />
+        </div>
+        <div>
+          <h4 className="font-semibold text-[14px] sm:text-[16px] text-[#1a1a1a]">
+            Dancing With Your Daughters
+          </h4>
+          <p className="text-[11px] sm:text-[13px] text-[#666]">The song behind the mission</p>
+        </div>
+      </div>
+
+      {/* Player Controls */}
+      <div className="flex items-center gap-3 sm:gap-4">
+        {/* Play/Pause Button */}
+        <button
+          onClick={togglePlay}
+          className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black hover:bg-[#333] flex items-center justify-center flex-shrink-0 transition-colors"
+          aria-label={isPlaying ? "Pause" : "Play"}
+        >
+          {isPlaying ? (
+            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+            </svg>
+          ) : (
+            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          )}
+        </button>
+
+        {/* Progress Section */}
+        <div className="flex-1 min-w-0">
+          {/* Progress Bar with visible scrubber */}
+          <div className="relative h-6 flex items-center group">
+            {/* Track background */}
+            <div className="absolute left-0 right-0 h-1.5 sm:h-2 bg-[#e5e5e5] rounded-full" />
+            {/* Progress fill */}
+            <div
+              className="absolute left-0 h-1.5 sm:h-2 bg-black rounded-full pointer-events-none"
+              style={{ width: `${progress}%` }}
+            />
+            {/* Scrubber thumb */}
+            <div
+              className="absolute w-3.5 h-3.5 sm:w-4 sm:h-4 bg-black rounded-full shadow-md pointer-events-none transform -translate-x-1/2 transition-transform group-hover:scale-110"
+              style={{ left: `${progress}%` }}
+            />
+            {/* Invisible range input for interaction */}
+            <input
+              type="range"
+              min="0"
+              max={duration || 100}
+              step="0.1"
+              value={currentTime}
+              onChange={handleSeek}
+              className="absolute left-0 w-full h-full opacity-0 cursor-pointer z-10"
+              aria-label="Seek"
+            />
+          </div>
+
+          {/* Time Display */}
+          <div className="flex justify-between mt-1">
+            <span className="text-[10px] sm:text-[11px] text-[#666] tabular-nums">
+              {formatTime(currentTime)}
+            </span>
+            <span className="text-[10px] sm:text-[11px] text-[#666] tabular-nums">
+              {formatTime(duration)}
+            </span>
+          </div>
+        </div>
+
+        {/* Volume Control - Hidden on mobile */}
+        <div className="hidden sm:flex items-center gap-2">
+          <svg className="w-4 h-4 text-[#666]" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" />
+          </svg>
+          <div className="relative w-20 h-5 flex items-center group">
+            <div className="absolute left-0 right-0 h-1.5 bg-[#e5e5e5] rounded-full" />
+            <div
+              className="absolute left-0 h-1.5 bg-[#666] rounded-full pointer-events-none"
+              style={{ width: `${volume * 100}%` }}
+            />
+            <div
+              className="absolute w-3 h-3 bg-[#666] rounded-full shadow-sm pointer-events-none transform -translate-x-1/2"
+              style={{ left: `${volume * 100}%` }}
+            />
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.05"
+              value={volume}
+              onChange={handleVolumeChange}
+              className="absolute left-0 w-full h-full opacity-0 cursor-pointer z-10"
+              aria-label="Volume"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Privacy Note */}
+      <p className="text-[10px] sm:text-[11px] text-[#999] text-center mt-4 italic">
+        This song is shared with you personally. Please don&apos;t distribute.
+      </p>
+    </div>
+  );
+}
+
 // Personalized Hero Component
 function PersonalizedHero() {
   const bookingDetails = useBookingDetails();
@@ -635,66 +836,148 @@ export default function BookedPage() {
       </section>
 
       {/* ===================================================================
-          PERSONAL NOTE - Message from Founder
+          PERSONAL NOTE - Message from Founder + Audio Player
       =================================================================== */}
       <section className="px-4 py-8 sm:py-16 bg-[#fefdfb]">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-[#ebe6df] rounded-2xl sm:rounded-3xl p-5 sm:p-10">
-            <h2 className="text-[24px] sm:text-[36px] md:text-[42px] font-semibold text-[#323B46] leading-tight mb-5 sm:mb-8 text-center">
+          {/* SVG filter for deckle edge effect - only applied to background */}
+          <svg className="absolute w-0 h-0" aria-hidden="true">
+            <defs>
+              <filter id="deckle-edge" x="-10%" y="-10%" width="120%" height="120%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.03 0.03" numOctaves="4" result="noise" seed="2" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="8" xChannelSelector="R" yChannelSelector="G" />
+              </filter>
+            </defs>
+          </svg>
+
+          {/* Wrapper for positioning */}
+          <div className="relative" style={{ transform: 'rotate(-0.3deg)' }}>
+            {/* Paper background with deckle edges - ONLY this layer gets the filter */}
+            <div
+              className="absolute inset-0"
+              style={{
+                background: 'linear-gradient(135deg, #faf8f5 0%, #f5f0e8 50%, #efe9df 100%)',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05), inset 0 0 60px rgba(255,255,255,0.5)',
+                borderRadius: '2px',
+                filter: 'url(#deckle-edge)',
+              }}
+            />
+
+            {/* Content container - NO filter, crisp text */}
+            <div className="relative p-6 sm:p-10 md:p-12">
+              {/* Subtle paper texture overlay */}
+              <div
+                className="absolute inset-0 opacity-[0.03] pointer-events-none"
+                style={{
+                  backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 400 400\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E")',
+                }}
+              />
+            <h2 className="relative text-[24px] sm:text-[36px] md:text-[42px] font-semibold text-[#323B46] leading-tight mb-5 sm:mb-8 text-center">
               A Personal Note From<br />
               Our Founder <span className="inline-block">❤️</span>
             </h2>
 
-            <div className="text-[13px] sm:text-[20px] text-[#444] space-y-3 sm:space-y-4 leading-relaxed">
+            {/* Letter content - standard font */}
+            <div className="relative text-[14px] sm:text-[17px] text-[#3d3d3d] leading-[1.8] sm:leading-[1.9] space-y-5 sm:space-y-6">
               <p>
-                I wanted to take a moment to personally thank you for scheduling a call with us.
-              </p>
-
-              <p>
-                I know how valuable your time is, and I&apos;m genuinely excited for the possibility of working together.
+                I wanted to take a moment to personally thank you for booking this call. I know how valuable your time is, and I don&apos;t take it lightly.
               </p>
 
               <p>
-                My business partners and I started this company for a simple reason: to bring families closer together.
+                But before we talk, I want you to know something. Not about how HUM works. About <em>why</em> it exists.
               </p>
 
               <p>
-                We saw too many brilliant, driven moms, people managing everything for everyone, silently struggling at home.
+                Before HUM was ever a company, before we had a single client or a team or a website, my life partner and best friend wrote a song. It&apos;s called <a href="#audio-player" className="text-[#b8926b] hover:underline">&ldquo;Dancing With Your Daughters.&rdquo;</a>
               </p>
 
               <p>
-                They were giving their all, but felt like they were losing themselves in the process.
+                It&apos;s still unreleased. But I&apos;m sharing it with you here because this song captures the heart behind why HUM exists better than anything I could ever say.
               </p>
 
               <p>
-                Our mission is to change that. We help busy moms bring calm and order to their homes so they can be truly present with what matters.
+                It&apos;s a song about presence. About being here, fully here, with the people you love while you still can. About holding close the ones you hold dear, knowing that none of it lasts forever. And about softening enough to actually receive the beautiful, ordinary, sacred moments instead of running past them.
               </p>
 
               <p>
-                This journey, however, is a partnership. Our system is the vehicle, but your commitment is the fuel.
+                When I first heard it, something clicked in my chest. Because that&apos;s exactly what I was watching families lose. Not because they didn&apos;t care. But because they were so buried in the logistics of life that they couldn&apos;t be present for the life itself.
               </p>
 
               <p>
-                If you&apos;re a mom dedicated to your family, and ready to commit to a process that will bring your family closer together, then I believe we are the right fit for you.
+                That song planted something deep in both of us. A conviction that became a mission. And that mission became HUM.
+              </p>
+
+              <p className="text-[16px] sm:text-[19px] font-semibold text-[#323B46] py-2">
+                Bringing families closer together.
               </p>
 
               <p>
-                My team and I can&apos;t wait to speak with you.
+                That&apos;s not a tagline. That&apos;s what gets me out of bed when building a company is hard. It&apos;s what anchors me when the sacrifices pile up. And it&apos;s what makes every sacrifice worth it, because this mission is bigger than us.
               </p>
 
-              <p className="pt-1 sm:pt-2">
-                Warmly,
+              
+              <p>
+                Since starting HUM, I&apos;ve talked to hundreds of families. And every single conversation has only deepened my belief in why this work matters.
               </p>
 
-              {/* Founder Signature */}
-              <div className="pt-1">
-                <p className="font-semibold text-[#323B46]">-Pedro</p>
-                <p className="text-[#666]">Co-Founder</p>
-              </div>
+              <p>
+                I hear about the morning chaos. Getting everyone fed, dressed, and out the door while simultaneously fielding the work email that can&apos;t wait.
+              </p>
+
+              <p>
+                I hear about the evening scramble. Dinner, homework, baths, bedtime, while mentally running through tomorrow&apos;s logistics.
+              </p>
+
+              <p>
+                I hear about the phone that never turns off. Because you never know when you&apos;ll get that call from school. Something happened. Someone forgot something. There&apos;s always something that needs your attention.
+              </p>
+
+              <p>
+                I hear about the unexpected sick kid that throws the entire week off. The nanny canceling last minute. The work commitment that collides with the school event, the one that really means a lot to your child.
+              </p>
+
+              <p>
+                I hear about the pressure of making sure everyone else is taken care of before you even think about taking care of yourself.
+              </p>
+
+              <p>
+                And I hear about the spouse. The person you chose to build a life with, and how the weight of all of this gets in the way of the relationship with the person you love the most.
+              </p>
+
+              <p>
+                I understand that pressure. I understand the absorption of it. And I understand what it feels like to not be able to turn it off.
+              </p>
+
+              
+              <p>
+                I want you to know that I see you. I see what you carry. I see the invisible work. I see the thousand decisions a day that nobody notices.
+              </p>
+
+              <p>
+                And I want to say thank you. For being here. For trusting us enough to book this call. For even considering that there might be a different way.
+              </p>
+
+              <p>
+                It is the honor of my life to come to work every single day and build something that gets to make your life a little easier. Or a lot easier.
+              </p>
+
+              <p>
+                We&apos;re just getting started.
+              </p>
+
+              <p>
+                Here is <a href="#audio-player" className="text-[#b8926b] hover:underline">&ldquo;Dancing With Your Daughters.&rdquo;</a> It&apos;s never been shared publicly. I hope it moves you the way it moved me.
+              </p>
+
+              <p>
+                In gratitude,<br />
+                Pedro<br />
+                Co-Founder
+              </p>
 
               {/* Founder Photo */}
-              <div className="pt-1 sm:pt-2">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden">
+              <div className="pt-2">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden">
                   <img
                     src="/pedro-headshot.png"
                     alt="Pedro - Co-Founder"
@@ -703,6 +986,14 @@ export default function BookedPage() {
                 </div>
               </div>
             </div>
+
+            {/* ===================================================================
+                AUDIO PLAYER - Dancing With Your Daughters
+            =================================================================== */}
+            <div id="audio-player" className="relative mt-8 sm:mt-12">
+              <AudioPlayer />
+            </div>
+          </div>
           </div>
         </div>
       </section>
