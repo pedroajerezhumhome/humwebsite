@@ -46,13 +46,20 @@ export default function DancingWithYourDaughtersPage() {
     const audio = audioRef.current;
     if (!audio) return;
 
-    const handleLoadedMetadata = () => {
-      setDuration(audio.duration);
-      setIsLoaded(true);
+    const updateDuration = () => {
+      if (audio.duration && !isNaN(audio.duration) && isFinite(audio.duration)) {
+        setDuration(audio.duration);
+        setIsLoaded(true);
+      }
     };
 
     const handleTimeUpdate = () => {
       setCurrentTime(audio.currentTime);
+      // Also check duration on time update in case it wasn't available earlier
+      if (!isLoaded && audio.duration && !isNaN(audio.duration) && isFinite(audio.duration)) {
+        setDuration(audio.duration);
+        setIsLoaded(true);
+      }
     };
 
     const handleEnded = () => {
@@ -60,16 +67,26 @@ export default function DancingWithYourDaughtersPage() {
       setCurrentTime(0);
     };
 
-    audio.addEventListener("loadedmetadata", handleLoadedMetadata);
+    // Check if duration is already available
+    if (audio.duration && !isNaN(audio.duration) && isFinite(audio.duration)) {
+      setDuration(audio.duration);
+      setIsLoaded(true);
+    }
+
+    audio.addEventListener("loadedmetadata", updateDuration);
+    audio.addEventListener("durationchange", updateDuration);
+    audio.addEventListener("canplay", updateDuration);
     audio.addEventListener("timeupdate", handleTimeUpdate);
     audio.addEventListener("ended", handleEnded);
 
     return () => {
-      audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      audio.removeEventListener("loadedmetadata", updateDuration);
+      audio.removeEventListener("durationchange", updateDuration);
+      audio.removeEventListener("canplay", updateDuration);
       audio.removeEventListener("timeupdate", handleTimeUpdate);
       audio.removeEventListener("ended", handleEnded);
     };
-  }, []);
+  }, [isLoaded]);
 
   const formatTime = (time: number) => {
     if (isNaN(time)) return "0:00";
@@ -366,16 +383,17 @@ export default function DancingWithYourDaughtersPage() {
           flex: 1;
         }
 
-        /* Volume Control - YouTube style */
+        /* Volume Control - Vertical YouTube style */
         .volume-control {
           display: none;
-          align-items: center;
+          position: relative;
           padding-top: 6px;
         }
 
         @media (min-width: 640px) {
           .volume-control {
             display: flex;
+            align-items: center;
           }
         }
 
@@ -393,32 +411,45 @@ export default function DancingWithYourDaughtersPage() {
         }
 
         .volume-slider-wrapper {
-          width: 0;
+          position: absolute;
+          bottom: 100%;
+          left: 50%;
+          transform: translateX(-50%);
+          height: 0;
           overflow: hidden;
-          transition: width 0.2s ease;
+          transition: height 0.2s ease, padding 0.2s ease;
+          display: flex;
+          justify-content: center;
+          padding: 0;
+          background: rgba(255, 255, 255, 0.95);
+          border-radius: 8px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .volume-control:hover .volume-slider-wrapper {
-          width: 60px;
-          margin-left: 8px;
+          height: 80px;
+          padding: 12px 8px;
+          margin-bottom: 8px;
         }
 
         .volume-slider {
-          width: 60px;
-          height: 4px;
-          -webkit-appearance: none;
-          appearance: none;
+          width: 4px;
+          height: 60px;
+          -webkit-appearance: slider-vertical;
+          appearance: slider-vertical;
           background: rgba(0, 0, 0, 0.1);
           border-radius: 2px;
           outline: none;
           cursor: pointer;
+          writing-mode: vertical-lr;
+          direction: rtl;
         }
 
         .volume-slider::-webkit-slider-thumb {
           -webkit-appearance: none;
           appearance: none;
-          width: 12px;
-          height: 12px;
+          width: 14px;
+          height: 14px;
           background: #c4907c;
           border-radius: 50%;
           cursor: pointer;
@@ -430,8 +461,8 @@ export default function DancingWithYourDaughtersPage() {
         }
 
         .volume-slider::-moz-range-thumb {
-          width: 12px;
-          height: 12px;
+          width: 14px;
+          height: 14px;
           background: #c4907c;
           border-radius: 50%;
           cursor: pointer;
