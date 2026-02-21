@@ -435,14 +435,19 @@ export default function DancingWithYourDaughtersPage() {
         .volume-slider {
           width: 4px;
           height: 60px;
-          -webkit-appearance: slider-vertical;
-          appearance: slider-vertical;
-          background: rgba(0, 0, 0, 0.1);
+          -webkit-appearance: none;
+          appearance: none;
+          background: transparent;
           border-radius: 2px;
           outline: none;
           cursor: pointer;
-          writing-mode: vertical-lr;
-          direction: rtl;
+        }
+
+        .volume-slider::-webkit-slider-runnable-track {
+          width: 4px;
+          height: 60px;
+          background: rgba(0, 0, 0, 0.15);
+          border-radius: 2px;
         }
 
         .volume-slider::-webkit-slider-thumb {
@@ -453,11 +458,14 @@ export default function DancingWithYourDaughtersPage() {
           background: #1a1a1a;
           border-radius: 50%;
           cursor: pointer;
-          transition: transform 0.15s ease;
+          margin-left: -5px;
         }
 
-        .volume-slider::-webkit-slider-thumb:hover {
-          transform: scale(1.15);
+        .volume-slider::-moz-range-track {
+          width: 4px;
+          height: 60px;
+          background: rgba(0, 0, 0, 0.15);
+          border-radius: 2px;
         }
 
         .volume-slider::-moz-range-thumb {
@@ -467,6 +475,11 @@ export default function DancingWithYourDaughtersPage() {
           border-radius: 50%;
           cursor: pointer;
           border: none;
+        }
+
+        .volume-slider::-moz-range-progress {
+          background: #1a1a1a;
+          border-radius: 2px;
         }
 
         /* Logo - Top Left */
