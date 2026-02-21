@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Geist, Geist_Mono, Caveat, Patrick_Hand } from "next/font/google";
+import { Geist, Geist_Mono, Caveat, Patrick_Hand, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -23,6 +23,12 @@ const patrickHand = Patrick_Hand({
   variable: "--font-patrick-hand",
   subsets: ["latin"],
   weight: "400",
+});
+
+const cormorantGaramond = Cormorant_Garamond({
+  variable: "--font-cormorant",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
@@ -83,7 +89,7 @@ export default function RootLayout({
         `}</Script>
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${caveat.variable} ${patrickHand.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${caveat.variable} ${patrickHand.variable} ${cormorantGaramond.variable} antialiased`}
       >
         <Script id="mouseflow" strategy="afterInteractive">{`
           window._mfq = window._mfq || [];

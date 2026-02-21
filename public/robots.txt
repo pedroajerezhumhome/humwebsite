@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+# Private pages
+Disallow: /dancingwithyourdaughters
+Disallow: /api/audio/
