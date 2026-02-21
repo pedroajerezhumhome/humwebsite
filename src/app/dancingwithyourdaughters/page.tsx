@@ -740,13 +740,13 @@ export default function DancingWithYourDaughtersPage() {
 
       {/* Logo - Top Left */}
       <a href="/" className="logo-container">
-        <img src="/hum-logo-new.png" alt="HUM" className="logo" />
+        <img src="/hum-logo.png" alt="HUM" className="logo" />
       </a>
 
       {/* Footer */}
       <footer className="footer">
         <div className="footer-content">
-          <img src="/hum-logo-new.png" alt="HUM" className="footer-logo" />
+          <img src="/hum-logo.png" alt="HUM" className="footer-logo" />
           <div className="footer-links">
             <a href="/privacy-policy">Privacy Policy</a>
             <a href="/terms-of-service">Terms of Service</a>
