@@ -856,7 +856,7 @@ export default function BookedPage() {
             <div
               className="absolute inset-0"
               style={{
-                background: 'linear-gradient(135deg, #faf8f5 0%, #f5f0e8 50%, #efe9df 100%)',
+                background: '#f5f0e8',
                 boxShadow: '0 4px 20px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05), inset 0 0 60px rgba(255,255,255,0.5)',
                 borderRadius: '2px',
                 filter: 'url(#deckle-edge)',
