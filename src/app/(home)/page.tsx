@@ -32,7 +32,7 @@ export default function Home() {
     if (document.getElementById("scheduler-iframe")) return;
 
     const iframe = document.createElement("iframe");
-    iframe.src = "https://app.scheduler.ai/book_meeting/?poolID=73b74168-a87e-4c70-a140-cb2161e112f4&embedded=true&embed=true&hideLogo=true&hide_logo=true";
+    iframe.src = "https://app.scheduler.ai/book_meeting/?poolID=7c10c83f-a402-4439-83b7-a054484fd658&embedded=true&embed=true&hideLogo=true&hide_logo=true";
     iframe.id = "scheduler-iframe";
     iframe.title = "Scheduler.ai Booking Form";
     iframe.allow = "fullscreen";
