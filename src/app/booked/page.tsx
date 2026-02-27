@@ -1057,10 +1057,10 @@ export default function BookedPage() {
           <div className="hidden md:block">
             <div className="relative">
               {/* Connector Line */}
-              <div className="absolute top-4 left-[12.5%] right-[12.5%] h-[2px] bg-[#e0d8cd]" />
+              <div className="absolute top-4 left-[16.67%] right-[16.67%] h-[2px] bg-[#e0d8cd]" />
 
               {/* Timeline Steps */}
-              <div className="grid grid-cols-4 gap-4">
+              <div className="grid grid-cols-3 gap-4">
                 {/* Step 1 - TODAY (highlighted) */}
                 <div className="flex flex-col items-center text-center">
                   <div className="w-8 h-8 rounded-full bg-[#b8926b] flex items-center justify-center mb-4 relative z-10 ring-4 ring-[#f5f0e8]">
@@ -1070,27 +1070,14 @@ export default function BookedPage() {
                     TODAY
                   </p>
                   <p className="text-[15px] sm:text-[15px] text-[#555] leading-relaxed">
-                    Complete the two steps below, accept your calendar invite and read your pre-call guide
+                    Accept your calendar invite, review the pre-call guide, and share it with your spouse or partner
                   </p>
                 </div>
 
-                {/* Step 2 - Before Your Call */}
+                {/* Step 2 - On The Call */}
                 <div className="flex flex-col items-center text-center">
                   <div className="w-8 h-8 rounded-full bg-[#d4ccc0] flex items-center justify-center mb-4 relative z-10 ring-4 ring-[#f5f0e8]">
                     <span className="text-white text-sm font-semibold">2</span>
-                  </div>
-                  <p className="text-[12px] uppercase tracking-[0.15em] font-semibold text-[#888] mb-2">
-                    BEFORE YOUR CALL
-                  </p>
-                  <p className="text-[15px] sm:text-[15px] text-[#555] leading-relaxed">
-                    Review your pre-call guide thoroughly and share it with your spouse or partner so everyone&apos;s on the same page
-                  </p>
-                </div>
-
-                {/* Step 3 - On The Call */}
-                <div className="flex flex-col items-center text-center">
-                  <div className="w-8 h-8 rounded-full bg-[#d4ccc0] flex items-center justify-center mb-4 relative z-10 ring-4 ring-[#f5f0e8]">
-                    <span className="text-white text-sm font-semibold">3</span>
                   </div>
                   <p className="text-[12px] uppercase tracking-[0.15em] font-semibold text-[#888] mb-2">
                     ON THE CALL
@@ -1100,10 +1087,10 @@ export default function BookedPage() {
                   </p>
                 </div>
 
-                {/* Step 4 - After */}
+                {/* Step 3 - After */}
                 <div className="flex flex-col items-center text-center">
                   <div className="w-8 h-8 rounded-full bg-[#d4ccc0] flex items-center justify-center mb-4 relative z-10 ring-4 ring-[#f5f0e8]">
-                    <span className="text-white text-sm font-semibold">4</span>
+                    <span className="text-white text-sm font-semibold">3</span>
                   </div>
                   <p className="text-[12px] uppercase tracking-[0.15em] font-semibold text-[#888] mb-2">
                     AFTER
@@ -1132,30 +1119,15 @@ export default function BookedPage() {
                     TODAY
                   </p>
                   <p className="text-[15px] sm:text-[15px] text-[#555] leading-relaxed">
-                    Complete the two steps below, accept your calendar invite and read your pre-call guide
+                    Accept your calendar invite, review the pre-call guide, and share it with your spouse or partner
                   </p>
                 </div>
               </div>
 
-              {/* Step 2 - Before Your Call */}
+              {/* Step 2 - On The Call */}
               <div className="relative pb-8">
                 <div className="absolute left-[-36px] w-8 h-8 rounded-full bg-[#d4ccc0] flex items-center justify-center ring-4 ring-[#f5f0e8]">
                   <span className="text-white text-sm font-semibold">2</span>
-                </div>
-                <div className="pt-1">
-                  <p className="text-[12px] uppercase tracking-[0.15em] font-semibold text-[#888] mb-1">
-                    BEFORE YOUR CALL
-                  </p>
-                  <p className="text-[15px] sm:text-[15px] text-[#555] leading-relaxed">
-                    Review your pre-call guide thoroughly and share it with your spouse or partner so everyone&apos;s on the same page
-                  </p>
-                </div>
-              </div>
-
-              {/* Step 3 - On The Call */}
-              <div className="relative pb-8">
-                <div className="absolute left-[-36px] w-8 h-8 rounded-full bg-[#d4ccc0] flex items-center justify-center ring-4 ring-[#f5f0e8]">
-                  <span className="text-white text-sm font-semibold">3</span>
                 </div>
                 <div className="pt-1">
                   <p className="text-[12px] uppercase tracking-[0.15em] font-semibold text-[#888] mb-1">
@@ -1167,10 +1139,10 @@ export default function BookedPage() {
                 </div>
               </div>
 
-              {/* Step 4 - After */}
+              {/* Step 3 - After */}
               <div className="relative">
                 <div className="absolute left-[-36px] w-8 h-8 rounded-full bg-[#d4ccc0] flex items-center justify-center ring-4 ring-[#f5f0e8]">
-                  <span className="text-white text-sm font-semibold">4</span>
+                  <span className="text-white text-sm font-semibold">3</span>
                 </div>
                 <div className="pt-1">
                   <p className="text-[12px] uppercase tracking-[0.15em] font-semibold text-[#888] mb-1">
