@@ -220,7 +220,7 @@ function CountdownTimer() {
   const { formattedDateTime, assignedTo } = bookingDetails;
 
   return (
-    <section className="px-4 pt-2 pb-10 sm:pt-4 sm:pb-16 bg-[#fefdfb]">
+    <section id="countdown" className="px-4 pt-2 pb-10 sm:pt-4 sm:pb-16 bg-[#fefdfb]">
       <div className="max-w-[560px] mx-auto">
         <div className="bg-[#f5f0e8] rounded-2xl sm:rounded-3xl px-6 py-8 sm:px-10 sm:py-10 text-center transition-all duration-300 hover:shadow-lg animate-on-load animate-fade-in-up animation-delay-300">
           {status === "counting" && (
@@ -567,6 +567,363 @@ function AudioPlayer() {
   );
 }
 
+// Section definitions for navigation
+const SECTIONS = [
+  { id: 'hero', label: 'Welcome' },
+  { id: 'countdown', label: 'Countdown' },
+  { id: 'timeline', label: 'What\'s Next' },
+  { id: 'step-1', label: 'Step 1' },
+  { id: 'step-2', label: 'Step 2' },
+  { id: 'letter', label: 'Personal Note' },
+];
+
+// Scroll Progress Indicator Component with completion celebration
+function ScrollProgressIndicator() {
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [showCompletion, setShowCompletion] = useState(false);
+  const [hasShownCompletion, setHasShownCompletion] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      setScrollProgress(Math.min(progress, 100));
+
+      // Show completion message when reaching 95%+ for the first time
+      if (progress >= 95 && !hasShownCompletion) {
+        setShowCompletion(true);
+        setHasShownCompletion(true);
+        // Auto-hide after 3 seconds
+        setTimeout(() => setShowCompletion(false), 3000);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [hasShownCompletion]);
+
+  return (
+    <>
+      {/* Progress bar */}
+      <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-[#f5f0e8]">
+        <div
+          className="h-full bg-[#b8926b] transition-all duration-150 ease-out"
+          style={{ width: `${scrollProgress}%` }}
+        />
+      </div>
+
+      {/* Completion celebration */}
+      {showCompletion && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 animate-fade-in-down">
+          <div className="bg-[#6b8e5e] text-white px-4 py-2 rounded-full text-[13px] font-medium shadow-lg flex items-center gap-2">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            You&apos;ve seen everything!
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+// Section Navigation Dots (desktop only)
+function SectionNavDots() {
+  const [activeSection, setActiveSection] = useState('hero');
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Show dots after scrolling past hero
+      setIsVisible(window.scrollY > 200);
+
+      // Determine active section
+      const sections = SECTIONS.map(s => document.getElementById(s.id)).filter(Boolean);
+      const scrollPosition = window.scrollY + window.innerHeight / 3;
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const section = sections[i];
+        if (section && section.offsetTop <= scrollPosition) {
+          setActiveSection(SECTIONS[i].id);
+          break;
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  if (!isVisible) return null;
+
+  return (
+    <div className="hidden lg:flex fixed right-6 top-1/2 -translate-y-1/2 z-40 flex-col gap-3">
+      {SECTIONS.map((section) => (
+        <button
+          key={section.id}
+          onClick={() => scrollToSection(section.id)}
+          className="group flex items-center gap-3 justify-end"
+          aria-label={`Go to ${section.label}`}
+        >
+          <span className={`text-[11px] uppercase tracking-wider transition-all duration-200 ${
+            activeSection === section.id
+              ? 'text-[#b8926b] opacity-100'
+              : 'text-[#999] opacity-0 group-hover:opacity-100'
+          }`}>
+            {section.label}
+          </span>
+          <div className={`w-2.5 h-2.5 rounded-full border-2 transition-all duration-200 ${
+            activeSection === section.id
+              ? 'bg-[#b8926b] border-[#b8926b] scale-110'
+              : 'bg-transparent border-[#ccc] group-hover:border-[#b8926b]'
+          }`} />
+        </button>
+      ))}
+    </div>
+  );
+}
+
+// Mobile Section Indicator (shows current section on mobile)
+function MobileSectionIndicator() {
+  const [activeSection, setActiveSection] = useState('');
+  const [isVisible, setIsVisible] = useState(false);
+  const [sectionIndex, setSectionIndex] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Show after scrolling past hero, hide near bottom
+      const scrollY = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercent = (scrollY / docHeight) * 100;
+
+      setIsVisible(scrollY > 300 && scrollPercent < 90);
+
+      // Determine active section
+      const scrollPosition = scrollY + window.innerHeight / 2;
+
+      for (let i = SECTIONS.length - 1; i >= 0; i--) {
+        const section = document.getElementById(SECTIONS[i].id);
+        if (section && section.offsetTop <= scrollPosition) {
+          setActiveSection(SECTIONS[i].label);
+          setSectionIndex(i);
+          break;
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  if (!isVisible) return null;
+
+  const progress = ((sectionIndex + 1) / SECTIONS.length) * 100;
+
+  return (
+    <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-sm border-t border-[#eee] px-4 py-2 safe-area-pb">
+      <div className="flex items-center justify-between gap-3 max-w-lg mx-auto">
+        <span className="text-[11px] uppercase tracking-wider text-[#888] font-medium truncate">
+          {activeSection}
+        </span>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="w-20 h-1.5 bg-[#eee] rounded-full overflow-hidden">
+            <div
+              className="h-full bg-[#b8926b] rounded-full transition-all duration-300"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+          <span className="text-[10px] text-[#999] tabular-nums">
+            {sectionIndex + 1}/{SECTIONS.length}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Back to Top Button
+function BackToTopButton() {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsVisible(window.scrollY > 600);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  return (
+    <button
+      onClick={scrollToTop}
+      className={`fixed bottom-16 lg:bottom-6 right-4 lg:right-6 z-40 w-10 h-10 lg:w-11 lg:h-11 bg-[#323B46] text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:bg-[#1a1a1a] hover:scale-110 ${
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
+      }`}
+      aria-label="Back to top"
+    >
+      <svg className="w-4 h-4 lg:w-5 lg:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+      </svg>
+    </button>
+  );
+}
+
+// Scroll Reveal Animation Hook
+function useScrollReveal() {
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('scroll-revealed');
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+    );
+
+    const elements = document.querySelectorAll('.scroll-reveal');
+    elements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
+}
+
+// Expandable Letter Component
+function ExpandableLetter() {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+    <div className="relative">
+      {/* Expand/Collapse Button */}
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className={`w-full flex items-center justify-center gap-2 py-3.5 sm:py-4 px-6 rounded-xl text-[15px] sm:text-[16px] font-semibold transition-all duration-200 ${
+          isExpanded
+            ? 'text-[#888] hover:text-[#666]'
+            : 'bg-[#323B46] text-white hover:bg-[#1a1a1a] hover:-translate-y-0.5 hover:shadow-lg'
+        }`}
+      >
+        {isExpanded ? (
+          <>
+            <span>Close letter</span>
+            <svg className="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+            </svg>
+          </>
+        ) : (
+          <>
+            <span>Read Pedro&apos;s Full Letter</span>
+            <svg className="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </>
+        )}
+      </button>
+
+      {/* Expandable Content - continues after the mission statement */}
+      <div
+        className={`overflow-hidden transition-all duration-500 ease-in-out ${
+          isExpanded ? 'max-h-[3000px] opacity-100' : 'max-h-0 opacity-0'
+        }`}
+      >
+        <div className="pt-4 sm:pt-6 border-t border-[#e5ddd0]">
+          <p className="text-[12px] sm:text-[13px] text-[#999] text-center mb-5 sm:mb-6">
+            2 min read
+          </p>
+
+          {/* Rest of the letter content */}
+          <div className="text-[16px] sm:text-[17px] text-[#3d3d3d] leading-[1.8] sm:leading-[1.9] space-y-5 sm:space-y-6">
+            <p>
+              That&apos;s not a tagline. That&apos;s what gets me out of bed when building a company is hard. It&apos;s what anchors me when the sacrifices pile up. And it&apos;s what makes every sacrifice worth it, because this mission is bigger than us.
+            </p>
+
+            <p>
+              Since starting HUM, I&apos;ve talked to hundreds of families. And every single conversation has only deepened my belief in why this work matters.
+            </p>
+
+            <p>
+              I hear about the morning chaos. Getting everyone fed, dressed, and out the door while simultaneously fielding the work email that can&apos;t wait.
+            </p>
+
+            <p>
+              I hear about the evening scramble. Dinner, homework, baths, bedtime, while mentally running through tomorrow&apos;s logistics.
+            </p>
+
+            <p>
+              I hear about the phone that never turns off. Because you never know when you&apos;ll get that call from school. Something happened. Someone forgot something. There&apos;s always something that needs your attention.
+            </p>
+
+            <p>
+              I hear about the unexpected sick kid that throws the entire week off. The nanny canceling last minute. The work commitment that collides with the school event, the one that really means a lot to your child.
+            </p>
+
+            <p>
+              I hear about the pressure of making sure everyone else is taken care of before you even think about taking care of yourself.
+            </p>
+
+            <p>
+              And I hear about the spouse. The person you chose to build a life with, and how the weight of all of this gets in the way of the relationship with the person you love the most.
+            </p>
+
+            <p>
+              I understand that pressure. I understand the absorption of it. And I understand what it feels like to not be able to turn it off.
+            </p>
+
+            <p>
+              I want you to know that I see you. I see what you carry. I see the invisible work. I see the thousand decisions a day that nobody notices.
+            </p>
+
+            <p>
+              And I want to say thank you. For being here. For trusting us enough to book this call. For even considering that there might be a different way.
+            </p>
+
+            <p>
+              It is the honor of my life to come to work every single day and build something that gets to make your life a little easier. Or a lot easier.
+            </p>
+
+            <p>
+              We&apos;re just getting started.
+            </p>
+
+            <p>
+              In gratitude,<br />
+              Pedro<br />
+              Co-Founder
+            </p>
+
+            {/* Founder Photo */}
+            <div className="pt-2">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden">
+                <img
+                  src="/pedro-headshot.png"
+                  alt="Pedro - Co-Founder"
+                  className="w-full h-full object-cover object-top scale-125"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // Personalized Hero Component
 function PersonalizedHero() {
   const bookingDetails = useBookingDetails();
@@ -577,7 +934,7 @@ function PersonalizedHero() {
     : "";
 
   return (
-    <section className="px-4 pt-4 pb-6 sm:pt-8 sm:pb-12 bg-[#fefdfb]">
+    <section id="hero" className="px-4 pt-4 pb-6 sm:pt-8 sm:pb-12 bg-[#fefdfb]">
       <div className="max-w-2xl mx-auto text-center">
         {/* Top Label */}
         <p className="text-[11px] sm:text-[12px] uppercase tracking-[0.2em] text-[#b8926b] mb-4 sm:mb-6 animate-on-load animate-fade-in-up">
@@ -594,17 +951,76 @@ function PersonalizedHero() {
         </h1>
 
         {/* Description */}
-        <p className="text-[16px] sm:text-[20px] text-[#555] max-w-xl mx-auto mb-4 sm:mb-8 leading-relaxed px-2 sm:px-0 animate-on-load animate-fade-in-up animation-delay-200">
-          Your life is about to get a whole lot easier. All the details for your upcoming call are on their way to your inbox and phone. But first, please review the important materials below.
+        <p className="text-[16px] sm:text-[20px] text-[#555] max-w-xl mx-auto mb-3 sm:mb-5 leading-relaxed px-2 sm:px-0 animate-on-load animate-fade-in-up animation-delay-200">
+          Your life is about to get a whole lot easier. Please take a moment now to read through everything on this page. It&apos;s essential to getting the most out of our time together. Be sure to check your email and phone for additional details.
         </p>
+
+        {/* Open loop - creates curiosity */}
+        <p className="text-[14px] sm:text-[15px] text-[#b8926b] max-w-md mx-auto mb-4 sm:mb-8 px-2 sm:px-0 animate-on-load animate-fade-in-up animation-delay-300 italic">
+          P.S. There&apos;s something personal waiting for you at the end of this page. A gift we&apos;ve never shared publicly.
+        </p>
+
+        {/* Scroll indicator - mobile only */}
+        <div className="sm:hidden flex flex-col items-center animate-bounce-subtle">
+          <span className="text-[11px] uppercase tracking-[0.15em] text-[#999] mb-1">Scroll</span>
+          <svg className="w-5 h-5 text-[#b8926b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
+        </div>
       </div>
     </section>
   );
 }
 
 export default function BookedPage() {
+  // Initialize scroll reveal animations
+  useScrollReveal();
+
   return (
     <div className="bg-[#fefdfb] text-[#454545] min-h-screen">
+      {/* Custom animations */}
+      <style jsx global>{`
+        @keyframes bounce-subtle {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(6px); }
+        }
+        .animate-bounce-subtle {
+          animation: bounce-subtle 2s ease-in-out infinite;
+        }
+        @keyframes fade-in-down {
+          from { opacity: 0; transform: translate(-50%, -10px); }
+          to { opacity: 1; transform: translate(-50%, 0); }
+        }
+        .animate-fade-in-down {
+          animation: fade-in-down 0.3s ease-out;
+        }
+        /* Scroll reveal animations */
+        .scroll-reveal {
+          opacity: 0;
+          transform: translateY(20px);
+          transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .scroll-revealed {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        /* Safe area for iOS devices */
+        .safe-area-pb {
+          padding-bottom: env(safe-area-inset-bottom, 8px);
+        }
+      `}</style>
+
+      {/* Scroll Progress Indicator */}
+      <ScrollProgressIndicator />
+
+      {/* Section Navigation Dots - Desktop */}
+      <SectionNavDots />
+
+      {/* Mobile Section Indicator */}
+      <MobileSectionIndicator />
+
+      {/* Back to Top Button */}
+      <BackToTopButton />
 
       {/* ===================================================================
           HEADER - Logo
@@ -630,8 +1046,8 @@ export default function BookedPage() {
       {/* ===================================================================
           WHAT HAPPENS NEXT - Timeline Section
       =================================================================== */}
-      <section className="px-4 py-8 sm:py-16 bg-[#f5f0e8]">
-        <div className="max-w-4xl mx-auto">
+      <section id="timeline" className="px-4 py-8 sm:py-16 bg-[#f5f0e8]">
+        <div className="max-w-4xl mx-auto scroll-reveal">
           {/* Section Header */}
           <h2 className="text-[26px] sm:text-[36px] md:text-[42px] font-semibold text-[#323B46] leading-tight mb-8 sm:mb-12 text-center">
             What Happens Next
@@ -667,7 +1083,7 @@ export default function BookedPage() {
                     BEFORE YOUR CALL
                   </p>
                   <p className="text-[15px] sm:text-[15px] text-[#555] leading-relaxed">
-                    Hope, our AI assistant, will call to ask a few questions so we&apos;re fully prepared and your time on the call is well spent
+                    Review your pre-call guide thoroughly and share it with your spouse or partner so everyone&apos;s on the same page
                   </p>
                 </div>
 
@@ -731,7 +1147,7 @@ export default function BookedPage() {
                     BEFORE YOUR CALL
                   </p>
                   <p className="text-[15px] sm:text-[15px] text-[#555] leading-relaxed">
-                    Hope, our AI assistant, will call to ask a few questions so we&apos;re fully prepared and your time on the call is well spent
+                    Review your pre-call guide thoroughly and share it with your spouse or partner so everyone&apos;s on the same page
                   </p>
                 </div>
               </div>
@@ -773,8 +1189,8 @@ export default function BookedPage() {
       {/* ===================================================================
           STEP 1 - Accept Calendar Invite
       =================================================================== */}
-      <section className="px-4 py-8 sm:py-16 bg-[#fefdfb]">
-        <div className="max-w-2xl mx-auto">
+      <section id="step-1" className="px-4 py-8 sm:py-16 bg-[#fefdfb]">
+        <div className="max-w-2xl mx-auto scroll-reveal">
           {/* Section Header */}
           <p className="text-[11px] sm:text-[12px] uppercase tracking-[0.2em] text-[#b8926b] mb-2 sm:mb-3 text-center">
             STEP 1: ACCEPT YOUR CALENDAR INVITE
@@ -805,8 +1221,8 @@ export default function BookedPage() {
       {/* ===================================================================
           STEP 2 - Download Pre-Call Guide
       =================================================================== */}
-      <section className="px-4 py-8 sm:py-16 bg-[#fefdfb]">
-        <div className="max-w-2xl mx-auto text-center">
+      <section id="step-2" className="px-4 py-8 sm:py-16 bg-[#fefdfb]">
+        <div className="max-w-2xl mx-auto text-center scroll-reveal">
           {/* Section Header */}
           <p className="text-[11px] sm:text-[12px] uppercase tracking-[0.2em] text-[#b8926b] mb-2 sm:mb-3">
             STEP 2: EVERYTHING YOU NEED TO KNOW
@@ -819,8 +1235,12 @@ export default function BookedPage() {
 
           {/* Download Card */}
           <div className="bg-[#f5f0e8] rounded-2xl sm:rounded-3xl p-6 sm:p-10 transition-all duration-300 hover:shadow-lg">
-            <p className="text-[16px] sm:text-[20px] text-[#555] mb-5 sm:mb-8 leading-relaxed">
+            <p className="text-[16px] sm:text-[20px] text-[#555] mb-4 sm:mb-6 leading-relaxed">
               This guide contains everything you need to know to get the absolute most value from our call.
+            </p>
+
+            <p className="text-[15px] sm:text-[17px] text-[#555] mb-5 sm:mb-8 leading-relaxed">
+              <span className="font-medium text-[#323B46]">Important:</span> If you have a spouse or partner involved in household decisions, please share this guide with them too. Coming to the call aligned makes everything smoother.
             </p>
 
             <a
@@ -832,14 +1252,23 @@ export default function BookedPage() {
               Download the Pre-Call PDF
             </a>
           </div>
+
+          {/* Teaser for next section */}
+          <div className="mt-10 sm:mt-14 flex flex-col items-center">
+            <p className="text-[13px] sm:text-[14px] text-[#888] mb-2">One more thing...</p>
+            <p className="text-[15px] sm:text-[17px] text-[#555] font-medium">We have a personal gift for you below</p>
+            <svg className="w-5 h-5 text-[#b8926b] mt-3 animate-bounce-subtle" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+          </div>
         </div>
       </section>
 
       {/* ===================================================================
           PERSONAL NOTE - Message from Founder + Audio Player
       =================================================================== */}
-      <section className="px-4 py-8 sm:py-16 bg-[#fefdfb]">
-        <div className="max-w-2xl mx-auto">
+      <section id="letter" className="px-4 py-8 sm:py-16 bg-[#fefdfb]">
+        <div className="max-w-2xl mx-auto scroll-reveal">
           {/* SVG filter for deckle edge effect - only applied to background */}
           <svg className="absolute w-0 h-0" aria-hidden="true">
             <defs>
@@ -872,13 +1301,14 @@ export default function BookedPage() {
                   backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 400 400\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E")',
                 }}
               />
-            <h2 className="relative text-[24px] sm:text-[36px] md:text-[42px] font-semibold text-[#323B46] leading-tight mb-5 sm:mb-8 text-center">
+
+            <h2 className="relative text-[24px] sm:text-[36px] md:text-[42px] font-semibold text-[#323B46] leading-tight mb-3 sm:mb-4 text-center">
               A Personal Note From<br />
               Our Founder <span className="inline-block">❤️</span>
             </h2>
 
-            {/* Letter content - standard font */}
-            <div className="relative text-[16px] sm:text-[17px] text-[#3d3d3d] leading-[1.8] sm:leading-[1.9] space-y-5 sm:space-y-6">
+            {/* Intro - always visible */}
+            <div className="relative text-[16px] sm:text-[17px] text-[#3d3d3d] leading-[1.8] sm:leading-[1.9] space-y-5 sm:space-y-6 mb-6 sm:mb-8">
               <p>
                 I wanted to take a moment to personally thank you for booking this call. I know how valuable your time is, and I don&apos;t take it lightly.
               </p>
@@ -888,13 +1318,23 @@ export default function BookedPage() {
               </p>
 
               <p>
-                Before HUM was ever a company, before we had a single client or a team or a website, my life partner and best friend wrote a song. It&apos;s called <a href="#audio-player" className="text-[#b8926b] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b8926b] focus-visible:ring-offset-1 rounded-sm">&ldquo;Dancing With Your Daughters.&rdquo;</a>
+                Before HUM was ever a company, before we had a single client or a team or a website, my life partner and best friend wrote a song. It&apos;s called &ldquo;Dancing With Your Daughters.&rdquo;
               </p>
 
               <p>
                 It&apos;s still unreleased. But I&apos;m sharing it with you here because this song captures the heart behind why HUM exists better than anything I could ever say.
               </p>
+            </div>
 
+            {/* ===================================================================
+                AUDIO PLAYER - Positioned after intro, before the hook
+            =================================================================== */}
+            <div id="audio-player" className="relative mb-6 sm:mb-8">
+              <AudioPlayer />
+            </div>
+
+            {/* Post-audio hook - leads to mission statement */}
+            <div className="relative text-[16px] sm:text-[17px] text-[#3d3d3d] leading-[1.8] sm:leading-[1.9] space-y-5 sm:space-y-6 mb-6 sm:mb-8">
               <p>
                 It&apos;s a song about presence. About being here, fully here, with the people you love while you still can. About holding close the ones you hold dear, knowing that none of it lasts forever. And about softening enough to actually receive the beautiful, ordinary, sacred moments instead of running past them.
               </p>
@@ -907,92 +1347,13 @@ export default function BookedPage() {
                 That song planted something deep in both of us. A conviction that became a mission. And that mission became HUM.
               </p>
 
-              <p className="text-[16px] sm:text-[19px] font-semibold text-[#323B46] py-2">
+              <p className="text-[18px] sm:text-[22px] font-semibold text-[#323B46] py-3 text-center">
                 Bringing families closer together.
               </p>
-
-              <p>
-                That&apos;s not a tagline. That&apos;s what gets me out of bed when building a company is hard. It&apos;s what anchors me when the sacrifices pile up. And it&apos;s what makes every sacrifice worth it, because this mission is bigger than us.
-              </p>
-
-              
-              <p>
-                Since starting HUM, I&apos;ve talked to hundreds of families. And every single conversation has only deepened my belief in why this work matters.
-              </p>
-
-              <p>
-                I hear about the morning chaos. Getting everyone fed, dressed, and out the door while simultaneously fielding the work email that can&apos;t wait.
-              </p>
-
-              <p>
-                I hear about the evening scramble. Dinner, homework, baths, bedtime, while mentally running through tomorrow&apos;s logistics.
-              </p>
-
-              <p>
-                I hear about the phone that never turns off. Because you never know when you&apos;ll get that call from school. Something happened. Someone forgot something. There&apos;s always something that needs your attention.
-              </p>
-
-              <p>
-                I hear about the unexpected sick kid that throws the entire week off. The nanny canceling last minute. The work commitment that collides with the school event, the one that really means a lot to your child.
-              </p>
-
-              <p>
-                I hear about the pressure of making sure everyone else is taken care of before you even think about taking care of yourself.
-              </p>
-
-              <p>
-                And I hear about the spouse. The person you chose to build a life with, and how the weight of all of this gets in the way of the relationship with the person you love the most.
-              </p>
-
-              <p>
-                I understand that pressure. I understand the absorption of it. And I understand what it feels like to not be able to turn it off.
-              </p>
-
-              
-              <p>
-                I want you to know that I see you. I see what you carry. I see the invisible work. I see the thousand decisions a day that nobody notices.
-              </p>
-
-              <p>
-                And I want to say thank you. For being here. For trusting us enough to book this call. For even considering that there might be a different way.
-              </p>
-
-              <p>
-                It is the honor of my life to come to work every single day and build something that gets to make your life a little easier. Or a lot easier.
-              </p>
-
-              <p>
-                We&apos;re just getting started.
-              </p>
-
-              <p>
-                Here is <a href="#audio-player" className="text-[#b8926b] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b8926b] focus-visible:ring-offset-1 rounded-sm">&ldquo;Dancing With Your Daughters.&rdquo;</a> It&apos;s never been shared publicly. I hope it moves you the way it moved me.
-              </p>
-
-              <p>
-                In gratitude,<br />
-                Pedro<br />
-                Co-Founder
-              </p>
-
-              {/* Founder Photo */}
-              <div className="pt-2">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden">
-                  <img
-                    src="/pedro-headshot.png"
-                    alt="Pedro - Co-Founder"
-                    className="w-full h-full object-cover object-top scale-125"
-                  />
-                </div>
-              </div>
             </div>
 
-            {/* ===================================================================
-                AUDIO PLAYER - Dancing With Your Daughters
-            =================================================================== */}
-            <div id="audio-player" className="relative mt-8 sm:mt-12">
-              <AudioPlayer />
-            </div>
+            {/* Expandable Full Letter - continues from here */}
+            <ExpandableLetter />
           </div>
           </div>
         </div>
