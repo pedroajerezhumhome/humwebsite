@@ -1209,7 +1209,7 @@ export default function BookedPage() {
             </h3>
 
             <p className="text-[14px] sm:text-[15px] text-[#555] mb-6 leading-relaxed">
-              This isn&apos;t just a preference. It&apos;s a requirement. This enables both of you to:
+              This is a requirement to speak with our team. This enables both of you to:
             </p>
 
             {/* Benefits */}
@@ -1219,7 +1219,7 @@ export default function BookedPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 <p className="text-[14px] sm:text-[15px] text-[#555]">
-                  <span className="font-semibold text-[#323B46]">Make confident decisions together</span> instead of one person trying to relay everything later
+                  <span className="font-semibold text-[#323B46]">Make confident decisions together</span>
                 </p>
               </div>
 
@@ -1237,14 +1237,14 @@ export default function BookedPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 <p className="text-[14px] sm:text-[15px] text-[#555]">
-                  <span className="font-semibold text-[#323B46]">Save weeks of back-and-forth</span> that happens when only one person attends
+                  <span className="font-semibold text-[#323B46]">Save weeks of back-and-forth</span>
                 </p>
               </div>
             </div>
 
             {/* Instructions */}
             <p className="text-[14px] sm:text-[15px] text-[#555] leading-relaxed">
-              If you added your partner&apos;s email when booking, they&apos;ve already received the calendar invite. Now make sure they accept it, otherwise it won&apos;t show up on their calendar. If you didn&apos;t add them, open the calendar event and add their email directly.
+              If you added their email when booking, they already have the invite. Make sure they accept it or it won&apos;t appear on their calendar. If not, open the calendar event and add them directly.
             </p>
           </div>
 
