@@ -574,6 +574,7 @@ const SECTIONS = [
   { id: 'timeline', label: 'What\'s Next' },
   { id: 'step-1', label: 'Step 1' },
   { id: 'step-2', label: 'Step 2' },
+  { id: 'step-3', label: 'Step 3' },
   { id: 'letter', label: 'Personal Note' },
 ];
 
@@ -1070,7 +1071,7 @@ export default function BookedPage() {
                     TODAY
                   </p>
                   <p className="text-[15px] sm:text-[15px] text-[#555] leading-relaxed">
-                    Accept your calendar invite, review the pre-call guide, and share it with your spouse or partner
+                    Accept your calendar invite, confirm your partner can join, and review the pre-call guide
                   </p>
                 </div>
 
@@ -1083,7 +1084,7 @@ export default function BookedPage() {
                     ON THE CALL
                   </p>
                   <p className="text-[15px] sm:text-[15px] text-[#555] leading-relaxed">
-                    We&apos;ll talk through your situation and see if HUM is the right fit
+                    We&apos;ll meet with both of you to understand your needs and see if HUM is the right fit
                   </p>
                 </div>
 
@@ -1119,7 +1120,7 @@ export default function BookedPage() {
                     TODAY
                   </p>
                   <p className="text-[15px] sm:text-[15px] text-[#555] leading-relaxed">
-                    Accept your calendar invite, review the pre-call guide, and share it with your spouse or partner
+                    Accept your calendar invite, confirm your partner can join, and review the pre-call guide
                   </p>
                 </div>
               </div>
@@ -1134,7 +1135,7 @@ export default function BookedPage() {
                     ON THE CALL
                   </p>
                   <p className="text-[15px] sm:text-[15px] text-[#555] leading-relaxed">
-                    We&apos;ll talk through your situation and see if HUM is the right fit
+                    We&apos;ll meet with both of you to understand your needs and see if HUM is the right fit
                   </p>
                 </div>
               </div>
@@ -1175,29 +1176,93 @@ export default function BookedPage() {
           {/* Calendar Card */}
           <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
             <h3 className="text-[15px] sm:text-[20px] font-semibold text-[#323B46] mb-2">
-              Click yes on the calendar invite that was sent to your email.
+              Click yes on the calendar invite that was sent to your email. It won&apos;t show up on your calendar unless you do this, and you risk missing your appointment.
             </h3>
 
             {/* Dynamic Calendar Invite Preview */}
             <Suspense fallback={null}>
               <DynamicCalendarCard />
             </Suspense>
-
-            <p className="text-[14px] sm:text-[15px] text-[#555] leading-relaxed">
-              <span className="font-semibold">Why this matters:</span> Accepting your calendar invite ensures you have the appointment saved and you&apos;ll receive all the important details and reminders leading up to our call.
-            </p>
           </div>
         </div>
       </section>
 
       {/* ===================================================================
-          STEP 2 - Download Pre-Call Guide
+          STEP 2 - Bring Your Partner
       =================================================================== */}
       <section id="step-2" className="px-4 py-8 sm:py-16 bg-[#fefdfb]">
+        <div className="max-w-2xl mx-auto scroll-reveal">
+          {/* Section Header */}
+          <p className="text-[11px] sm:text-[12px] uppercase tracking-[0.2em] text-[#b8926b] mb-2 sm:mb-3 text-center">
+            STEP 2: THIS IS THE MOST IMPORTANT STEP
+          </p>
+
+          <h2 className="text-[26px] sm:text-[44px] md:text-[42px] font-semibold text-[#323B46] leading-tight mb-6 sm:mb-10 text-center">
+            Bring Your Partner<br />
+            to the Call
+          </h2>
+
+          {/* Main Card */}
+          <div className="bg-[#f5f0e8] rounded-2xl sm:rounded-3xl p-4 sm:p-8 transition-all duration-300 hover:shadow-lg">
+            <h3 className="text-[15px] sm:text-[20px] font-semibold text-[#323B46] mb-4">
+              If you have a spouse or partner involved in household decisions, we need them on this call.
+            </h3>
+
+            <p className="text-[14px] sm:text-[15px] text-[#555] mb-6 leading-relaxed">
+              This isn&apos;t just a preference. It&apos;s a requirement. This enables both of you to:
+            </p>
+
+            {/* Benefits */}
+            <div className="space-y-3 mb-6">
+              <div className="flex items-start gap-3">
+                <svg className="w-5 h-5 text-[#b8926b] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <p className="text-[14px] sm:text-[15px] text-[#555]">
+                  <span className="font-semibold text-[#323B46]">Make confident decisions together</span> instead of one person trying to relay everything later
+                </p>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <svg className="w-5 h-5 text-[#b8926b] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <p className="text-[14px] sm:text-[15px] text-[#555]">
+                  <span className="font-semibold text-[#323B46]">Get all your questions answered at once</span>
+                </p>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <svg className="w-5 h-5 text-[#b8926b] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <p className="text-[14px] sm:text-[15px] text-[#555]">
+                  <span className="font-semibold text-[#323B46]">Save weeks of back-and-forth</span> that happens when only one person attends
+                </p>
+              </div>
+            </div>
+
+            {/* Instructions */}
+            <p className="text-[14px] sm:text-[15px] text-[#555] leading-relaxed">
+              If you added your partner&apos;s email when booking, they&apos;ve already received the calendar invite. Now make sure they accept it, otherwise it won&apos;t show up on their calendar. If you didn&apos;t add them, open the calendar event and add their email directly.
+            </p>
+          </div>
+
+          {/* Reassurance - matches the "Why this matters" pattern */}
+          <p className="text-[13px] sm:text-[14px] text-[#888] text-center mt-6">
+            Single or the only decision-maker? No problem, just skip this step.
+          </p>
+        </div>
+      </section>
+
+      {/* ===================================================================
+          STEP 3 - Download Pre-Call Guide
+      =================================================================== */}
+      <section id="step-3" className="px-4 py-8 sm:py-16 bg-[#fefdfb]">
         <div className="max-w-2xl mx-auto text-center scroll-reveal">
           {/* Section Header */}
           <p className="text-[11px] sm:text-[12px] uppercase tracking-[0.2em] text-[#b8926b] mb-2 sm:mb-3">
-            STEP 2: EVERYTHING YOU NEED TO KNOW
+            STEP 3: EVERYTHING YOU NEED TO KNOW
           </p>
 
           <h2 className="text-[26px] sm:text-[44px] md:text-[42px] font-semibold text-[#323B46] leading-tight mb-6 sm:mb-10">
@@ -1212,7 +1277,7 @@ export default function BookedPage() {
             </p>
 
             <p className="text-[15px] sm:text-[17px] text-[#555] mb-5 sm:mb-8 leading-relaxed">
-              <span className="font-medium text-[#323B46]">Important:</span> If you have a spouse or partner involved in household decisions, please share this guide with them too. Coming to the call aligned makes everything smoother.
+              Share this guide with your partner so you&apos;re both prepared for our conversation.
             </p>
 
             <a
