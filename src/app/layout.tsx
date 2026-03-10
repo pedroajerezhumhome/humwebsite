@@ -79,7 +79,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${cormorantGaramond.variable} antialiased`}
       >
-        <Script id="mouseflow" strategy="afterInteractive">{`
+        <script type="text/javascript" dangerouslySetInnerHTML={{__html: `
           window._mfq = window._mfq || [];
           (function() {
             var mf = document.createElement("script");
@@ -87,7 +87,7 @@ export default function RootLayout({
             mf.src = "//cdn.mouseflow.com/projects/4cd6aae8-538e-4882-8893-da78958f2b5a.js";
             document.getElementsByTagName("head")[0].appendChild(mf);
           })();
-        `}</Script>
+        `}} />
         <noscript>
           <iframe
             src="https://www.googletagmanager.com/ns.html?id=GTM-M3HSXX46"
