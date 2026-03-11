@@ -8,20 +8,24 @@ import {
 } from "@/data/employerBurden";
 
 interface CostCalculatorProps {
-  showRoi?: boolean;
   embedded?: boolean;
 }
 
 export default function CostCalculator({
-  showRoi = true,
   embedded = false,
 }: CostCalculatorProps) {
+  // Step management
+  const [step, setStep] = useState<1 | 2>(1);
+
+  // Step 1: Buyback rate inputs
+  const [userIncome, setUserIncome] = useState("");
+
+  // Step 2: Cost calculator inputs
   const [selectedState, setSelectedState] = useState("California");
   const [hoursPerWeek, setHoursPerWeek] = useState(20);
-  const hourlyRate = 30; // Fixed base rate
-  const [userIncome, setUserIncome] = useState("");
+  const [hourlyRate, setHourlyRate] = useState<number | "">(30);
+
   const [isDetectingState, setIsDetectingState] = useState(true);
-  const [showRoiSection, setShowRoiSection] = useState(false);
 
   // Auto-detect state on mount
   useEffect(() => {
@@ -33,7 +37,6 @@ export default function CostCalculator({
           setSelectedState(data.region);
         }
       } catch {
-        // Fallback to California if detection fails
         console.log("Could not detect state, using default");
       } finally {
         setIsDetectingState(false);
@@ -52,38 +55,48 @@ export default function CostCalculator({
     []
   );
 
-  // Calculate costs
-  const calculations = useMemo(() => {
-    const burdenPercent = EMPLOYER_BURDEN[selectedState] || DEFAULT_BURDEN;
-    const burdenAmount = hourlyRate * (burdenPercent / 100);
-    const margin = hourlyRate * 0.1;
-    const totalCost = hourlyRate + burdenAmount + margin;
-
-    // Weekly and monthly costs
-    const weeklyCost = totalCost * hoursPerWeek;
-    const monthlyCost = weeklyCost * 4.33; // Average weeks per month
-
-    // Buyback rate calculation
+  // Calculate buyback rate (Step 1)
+  const buybackCalc = useMemo(() => {
     const rawIncome = parseInt(userIncome.replace(/[^0-9]/g, "")) || 0;
     const userHourlyValue = rawIncome / 2000;
-    const buybackRate = userHourlyValue / 4; // Max you should pay to delegate
-    const shouldDelegate = totalCost < buybackRate;
-    const savings = buybackRate - totalCost; // How much under buyback rate
-
+    const buybackRate = userHourlyValue / 4;
     return {
-      burdenPercent,
-      burdenAmount,
-      margin,
-      totalCost,
-      weeklyCost,
-      monthlyCost,
+      rawIncome,
       userHourlyValue,
       buybackRate,
-      shouldDelegate,
-      savings,
-      hasValidIncome: rawIncome >= 50000,
+      isValid: rawIncome >= 50000,
     };
-  }, [selectedState, hourlyRate, hoursPerWeek, userIncome]);
+  }, [userIncome]);
+
+  // Calculate costs (Step 2)
+  const costCalc = useMemo(() => {
+    const rate = hourlyRate || 0;
+
+    const weeklyCost = rate * hoursPerWeek;
+    const monthlyCost = weeklyCost * 4.33;
+
+    const isWithinBudget = rate < buybackCalc.buybackRate;
+    const savings = buybackCalc.buybackRate - rate;
+
+    // ROI calculation
+    const weeklyTimeValue = buybackCalc.userHourlyValue * hoursPerWeek;
+    const weeklyNetGain = weeklyTimeValue - weeklyCost;
+    const monthlyNetGain = weeklyNetGain * 4.33;
+    const roiMultiplier = rate > 0 ? buybackCalc.userHourlyValue / rate : 0;
+
+    return {
+      hourlyRate: rate,
+      weeklyCost,
+      monthlyCost,
+      isWithinBudget,
+      savings,
+      weeklyTimeValue,
+      weeklyNetGain,
+      monthlyNetGain,
+      roiMultiplier,
+      isValid: rate > 0,
+    };
+  }, [hourlyRate, hoursPerWeek, buybackCalc.buybackRate, buybackCalc.userHourlyValue]);
 
   // Handle income input
   const handleIncomeInput = useCallback(
@@ -99,161 +112,218 @@ export default function CostCalculator({
     []
   );
 
+  const handleContinue = () => {
+    if (buybackCalc.isValid) {
+      setStep(2);
+    }
+  };
+
+  const handleBack = () => {
+    setStep(1);
+  };
+
   return (
     <div className={`cost-calc-container${embedded ? " embedded" : ""}`}>
-      {/* Header */}
-      <div className="cost-calc-header">
-        <h2>What does it really cost to hire a House Manager?</h2>
-        <p>
-          See your total cost when HUM acts as employer of record.
-        </p>
-      </div>
-
-      {/* Inputs Section */}
-      <div className="cost-calc-inputs">
-        {/* State Selection */}
-        <div className="cost-calc-field">
-          <label htmlFor="state-select">
-            Your state
-            {isDetectingState && (
-              <span className="detecting"> (detecting...)</span>
-            )}
-          </label>
-          <select
-            id="state-select"
-            value={selectedState}
-            onChange={(e) => setSelectedState(e.target.value)}
-            className="cost-calc-select"
-          >
-            {STATE_NAMES.map((state) => (
-              <option key={state} value={state}>
-                {state}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Hours Per Week Slider */}
-        <div className="cost-calc-field">
-          <label htmlFor="hours-slider">
-            Hours per week:{" "}
-            <strong className="rate-display">{hoursPerWeek} hrs</strong>
-          </label>
-          <div className="slider-container">
-            <span className="slider-min">10</span>
-            <input
-              id="hours-slider"
-              type="range"
-              min={10}
-              max={40}
-              step={1}
-              value={hoursPerWeek}
-              onChange={(e) => setHoursPerWeek(Number(e.target.value))}
-              className="cost-calc-slider"
-            />
-            <span className="slider-max">40</span>
+      {/* Step 1: Discover Your Buyback Rate */}
+      {step === 1 && (
+        <>
+          <div className="cost-calc-header">
+            <h2>What&apos;s your time really worth?</h2>
+            <p>
+              Your buyback rate is the maximum you should pay someone to handle
+              tasks you&apos;re currently doing yourself.
+            </p>
           </div>
-        </div>
-      </div>
 
-      {/* Cost Breakdown */}
-      <div className="cost-calc-breakdown">
-        <div className="breakdown-header">Your Investment</div>
-        <div className="breakdown-row">
-          <span className="breakdown-label">Hourly rate</span>
-          <span className="breakdown-value highlight">
-            ${fmt(calculations.totalCost)}
-          </span>
-        </div>
-        <div className="breakdown-divider"></div>
-        <div className="breakdown-row">
-          <span className="breakdown-label">Weekly ({hoursPerWeek} hrs)</span>
-          <span className="breakdown-value">
-            ${fmt(calculations.weeklyCost, 0)}
-          </span>
-        </div>
-        <div className="breakdown-row total">
-          <span className="breakdown-label">Monthly investment</span>
-          <span className="breakdown-value highlight">
-            ${fmt(calculations.monthlyCost, 0)}
-          </span>
-        </div>
-      </div>
-
-      {/* ROI Section */}
-      {showRoi && (
-        <div className="cost-calc-roi">
-          <button
-            className="roi-toggle"
-            onClick={() => setShowRoiSection(!showRoiSection)}
-          >
-            <span className="roi-icon">
-              {showRoiSection ? "−" : "+"}
-            </span>
-            What&apos;s your time worth?
-          </button>
-
-          {showRoiSection && (
-            <div className="roi-content">
-              <div className="cost-calc-field">
-                <label htmlFor="income-input">Your household income</label>
-                <div className="income-input-wrap">
-                  <span className="currency-symbol">$</span>
-                  <input
-                    id="income-input"
-                    type="text"
-                    className="cost-calc-input"
-                    placeholder="250,000"
-                    inputMode="numeric"
-                    value={userIncome}
-                    onChange={handleIncomeInput}
-                  />
-                </div>
+          <div className="cost-calc-inputs">
+            <div className="cost-calc-field">
+              <label htmlFor="income-input">Your household income</label>
+              <div className="income-input-wrap">
+                <span className="currency-symbol">$</span>
+                <input
+                  id="income-input"
+                  type="text"
+                  className="cost-calc-input"
+                  placeholder="250,000"
+                  inputMode="numeric"
+                  value={userIncome}
+                  onChange={handleIncomeInput}
+                />
               </div>
+            </div>
+          </div>
 
-              {calculations.hasValidIncome && (
-                <div className="roi-results">
-                  <div className="roi-stat">
-                    <span className="roi-label">Your hourly value</span>
-                    <span className="roi-value">
-                      ${fmt(calculations.userHourlyValue, 0)}/hr
-                    </span>
-                  </div>
-                  <div className="roi-stat">
-                    <span className="roi-label">Your buyback rate</span>
-                    <span className="roi-value">
-                      ${fmt(calculations.buybackRate, 0)}/hr
-                    </span>
-                  </div>
-                  <div className="roi-insight">
-                    {calculations.shouldDelegate ? (
-                      <>
-                        <strong>You should delegate.</strong> At ${fmt(calculations.totalCost)}/hr,
-                        a House Manager costs <strong>${fmt(calculations.savings, 0)}/hr less</strong> than
-                        your buyback rate. Your time is worth more doing higher-value work.
-                      </>
-                    ) : (
-                      <>
-                        The math is close, but consider the intangible value: stress
-                        reduction, quality time with family, and mental
-                        bandwidth reclaimed.
-                      </>
-                    )}
-                  </div>
-                </div>
-              )}
+          {buybackCalc.isValid && (
+            <div className="buyback-results">
+              <div className="buyback-stat">
+                <span className="buyback-label">Your household hourly value</span>
+                <span className="buyback-value">
+                  ${fmt(buybackCalc.userHourlyValue, 0)}/hr
+                </span>
+              </div>
+              <div className="buyback-stat featured">
+                <span className="buyback-label">Your household buyback rate</span>
+                <span className="buyback-value highlight">
+                  ${fmt(buybackCalc.buybackRate, 0)}/hr
+                </span>
+              </div>
+              <p className="buyback-explanation">
+                If you can delegate a task for less than{" "}
+                <strong>${fmt(buybackCalc.buybackRate, 0)}/hr</strong>, you
+                should. Your time is worth more doing higher-value work.
+              </p>
+
+              <button className="continue-btn" onClick={handleContinue}>
+                See if a House Manager fits your budget
+              </button>
             </div>
           )}
-        </div>
+        </>
       )}
 
-      {/* Disclaimer */}
-      <div className="cost-calc-disclaimer">
-        <p>
-          * Employer burden includes payroll taxes, workers&apos; compensation,
-          unemployment insurance, and related costs. Actual rates may vary.
-        </p>
-      </div>
+      {/* Step 2: Cost Calculator */}
+      {step === 2 && (
+        <>
+          <div className="cost-calc-header">
+            <button className="back-link" onClick={handleBack}>
+              ← Back
+            </button>
+            <h2>Your House Manager investment</h2>
+            <p>
+              Your buyback rate:{" "}
+              <strong>${fmt(buybackCalc.buybackRate, 0)}/hr</strong>
+            </p>
+          </div>
+
+          <div className="cost-calc-inputs">
+            {/* Hourly Rate Input */}
+            <div className="cost-calc-field">
+              <label htmlFor="hourly-rate-input">
+                House Manager hourly rate
+              </label>
+              <div className="income-input-wrap">
+                <span className="currency-symbol">$</span>
+                <input
+                  id="hourly-rate-input"
+                  type="number"
+                  className="cost-calc-input"
+                  placeholder="30"
+                  inputMode="numeric"
+                  min={15}
+                  max={75}
+                  value={hourlyRate}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setHourlyRate(val === "" ? "" : Number(val));
+                  }}
+                />
+                <span className="rate-suffix">/hr</span>
+              </div>
+            </div>
+
+            {/* Hours Per Week Slider */}
+            <div className="cost-calc-field">
+              <label htmlFor="hours-slider">
+                Hours per week:{" "}
+                <strong className="rate-display">{hoursPerWeek} hrs</strong>
+              </label>
+              <div className="slider-container">
+                <span className="slider-min">10</span>
+                <input
+                  id="hours-slider"
+                  type="range"
+                  min={10}
+                  max={40}
+                  step={1}
+                  value={hoursPerWeek}
+                  onChange={(e) => setHoursPerWeek(Number(e.target.value))}
+                  className="cost-calc-slider"
+                />
+                <span className="slider-max">40</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Cost Breakdown */}
+          <div className="cost-calc-breakdown">
+            <div className="breakdown-header">Your Investment</div>
+            <div className="breakdown-row">
+              <span className="breakdown-label">Hourly rate</span>
+              <span className="breakdown-value highlight">
+                ${fmt(costCalc.hourlyRate, 0)}
+              </span>
+            </div>
+            <div className="breakdown-divider"></div>
+            <div className="breakdown-row">
+              <span className="breakdown-label">
+                Weekly ({hoursPerWeek} hrs)
+              </span>
+              <span className="breakdown-value">
+                ${fmt(costCalc.weeklyCost, 0)}
+              </span>
+            </div>
+            <div className="breakdown-row total">
+              <span className="breakdown-label">Monthly investment</span>
+              <span className="breakdown-value highlight">
+                ${fmt(costCalc.monthlyCost, 0)}
+              </span>
+            </div>
+          </div>
+
+          {/* ROI Section */}
+          <div className="cost-calc-roi-box">
+            <div className="breakdown-header">Your Return</div>
+            <div className="breakdown-row">
+              <span className="breakdown-label">Value of time reclaimed</span>
+              <span className="breakdown-value">
+                ${fmt(costCalc.weeklyTimeValue, 0)}/wk
+              </span>
+            </div>
+            <div className="breakdown-row">
+              <span className="breakdown-label">Net value gained</span>
+              <span className="breakdown-value highlight">
+                ${fmt(costCalc.monthlyNetGain, 0)}/mo
+              </span>
+            </div>
+            <div className="breakdown-row total">
+              <span className="breakdown-label">ROI</span>
+              <span className="breakdown-value highlight roi-big">
+                {fmt(costCalc.roiMultiplier, 1)}x
+              </span>
+            </div>
+          </div>
+
+          {/* Verdict */}
+          <div
+            className={`verdict-box ${costCalc.isWithinBudget ? "success" : "neutral"}`}
+          >
+            {costCalc.isWithinBudget ? (
+              <>
+                <div className="verdict-icon">✓</div>
+                <div className="verdict-content">
+                  <strong>This fits your buyback rate.</strong>
+                  <p>
+                    At ${fmt(costCalc.hourlyRate, 0)}/hr, a House Manager costs{" "}
+                    <strong>${fmt(costCalc.savings, 0)}/hr less</strong> than
+                    your ${fmt(buybackCalc.buybackRate, 0)}/hr threshold. Your
+                    time is worth more doing higher-value work.
+                  </p>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="verdict-content">
+                  <strong>The math is close.</strong>
+                  <p>
+                    But consider the intangible value: stress reduction, quality
+                    time with family, and mental bandwidth reclaimed.
+                  </p>
+                </div>
+              </>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }

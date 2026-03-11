@@ -388,6 +388,26 @@
   font-weight: 500;
 }
 
+.rate-suffix {
+  position: absolute;
+  right: 14px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-text-muted, #666666);
+}
+
+/* Hide number input spinners */
+.cost-calc-input[type="number"]::-webkit-inner-spin-button,
+.cost-calc-input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.cost-calc-input[type="number"] {
+  -moz-appearance: textfield;
+  padding-right: 40px;
+}
+
 /* ROI Results */
 .roi-results {
   margin-top: 16px;
@@ -436,6 +456,163 @@
   color: var(--color-text-muted, #666666);
   margin: 0;
   line-height: 1.5;
+}
+
+/* Step 1: Buyback Results */
+.buyback-results {
+  margin-top: 24px;
+}
+
+.buyback-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.buyback-stat.featured {
+  background: rgba(184, 146, 107, 0.06);
+  margin: 0 -20px;
+  padding: 16px 20px;
+  border-radius: 10px;
+  border-bottom: none;
+}
+
+.buyback-label {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary, #454545);
+}
+
+.buyback-value {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text-primary, #323b46);
+}
+
+.buyback-value.highlight {
+  font-size: 1.3rem;
+  color: var(--color-accent, #b8926b);
+}
+
+.buyback-explanation {
+  margin-top: 20px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--color-text-secondary, #454545);
+  text-align: center;
+}
+
+.buyback-explanation strong {
+  color: var(--color-accent, #b8926b);
+}
+
+.continue-btn {
+  display: block;
+  width: 100%;
+  margin-top: 24px;
+  padding: 16px 24px;
+  background: #1a1a1a;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.continue-btn:hover {
+  background: #000000;
+}
+
+/* Step 2: Back Link */
+.back-link {
+  display: inline-block;
+  margin-bottom: 16px;
+  padding: 0;
+  background: none;
+  border: none;
+  font-size: 0.85rem;
+  color: var(--color-text-muted, #666666);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.back-link:hover {
+  color: var(--color-text-primary, #323b46);
+}
+
+/* ROI Box */
+.cost-calc-roi-box {
+  background: rgba(184, 146, 107, 0.06);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.cost-calc-roi-box .breakdown-header {
+  color: var(--color-accent, #b8926b);
+}
+
+.roi-big {
+  font-size: 1.4rem !important;
+}
+
+/* Verdict Box */
+.verdict-box {
+  display: flex;
+  gap: 16px;
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 4px;
+}
+
+.verdict-box.success {
+  background: rgba(34, 139, 34, 0.08);
+}
+
+.verdict-box.neutral {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.verdict-icon {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(34, 139, 34, 0.15);
+  color: #228b22;
+  border-radius: 50%;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.verdict-content {
+  flex: 1;
+}
+
+.verdict-content strong {
+  display: block;
+  font-size: 1rem;
+  color: var(--color-text-primary, #323b46);
+  margin-bottom: 6px;
+}
+
+.verdict-content p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--color-text-secondary, #454545);
+}
+
+.verdict-content p strong {
+  display: inline;
+  font-size: inherit;
+  color: var(--color-accent, #b8926b);
+  margin: 0;
 }
 
 /* Responsive */
