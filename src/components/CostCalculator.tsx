@@ -238,6 +238,9 @@ export default function CostCalculator({
                   value={hoursPerWeek}
                   onChange={(e) => setHoursPerWeek(Number(e.target.value))}
                   className="cost-calc-slider"
+                  style={{
+                    "--slider-progress": `${((hoursPerWeek - 10) / (40 - 10)) * 100}%`,
+                  } as React.CSSProperties}
                 />
                 <span className="slider-max">40</span>
               </div>
