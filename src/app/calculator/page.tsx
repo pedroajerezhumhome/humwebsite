@@ -19,7 +19,7 @@ export default function CalculatorPage() {
       {/* Main Content */}
       <main className="calculator-main">
         <div className="calculator-container">
-          <CostCalculator showRoi={true} />
+          <CostCalculator />
         </div>
       </main>
 
