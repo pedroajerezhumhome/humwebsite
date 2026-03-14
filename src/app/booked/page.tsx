@@ -41,19 +41,22 @@ function useBookingDetails() {
     time: string;
     tzAbbrev: string;
     formattedDateTime: string;
+    persona: "mom" | "dad" | "individual";
+    hasPartner: boolean;
   } | null>(null);
 
   useEffect(() => {
-    // Support both old params and new Scheduler.ai params
-    // Scheduler.ai now sends meeting_start in ISO format (e.g., 2026-02-13T17:30:00-06:00)
     const eventStartTime = searchParams.get("meeting_start") || searchParams.get("event_start_time") || searchParams.get("start_time");
     const timeZone = searchParams.get("timeZone") || searchParams.get("timezone") || searchParams.get("user_timezone") || "America/Chicago";
     const assignedToParam = searchParams.get("assigned_to");
-    // Scheduler.ai uses "name" or "user_name" instead of "invitee_full_name"
     const inviteeFullName = searchParams.get("invitee_full_name") || searchParams.get("name") || searchParams.get("user_name");
     const email = searchParams.get("email") || searchParams.get("user_email") || "";
     const phone = searchParams.get("phone") || searchParams.get("user_phone") || "";
     const duration = searchParams.get("duration") || "";
+    const personaRaw = searchParams.get("are_you_a_mom_or_dad") || "";
+    const partnerRaw = searchParams.get("do_you_live_with_a_partner_or_spouse") || "";
+    const persona: "mom" | "dad" | "individual" = personaRaw.includes("dad") ? "dad" : personaRaw.includes("mom") ? "mom" : "individual";
+    const hasPartner = partnerRaw === "yes";
 
     const decodedTimeZone = decodeURIComponent(timeZone);
     const assignedTo = assignedToParam
@@ -81,6 +84,8 @@ function useBookingDetails() {
         time: "",
         tzAbbrev: "",
         formattedDateTime: "Check your email for details",
+        persona,
+        hasPartner,
       });
       return;
     }
@@ -105,6 +110,8 @@ function useBookingDetails() {
         time: "",
         tzAbbrev: "",
         formattedDateTime: "Check your email for details",
+        persona,
+        hasPartner,
       });
       return;
     }
@@ -164,128 +171,35 @@ function useBookingDetails() {
       time,
       tzAbbrev,
       formattedDateTime,
+      persona,
+      hasPartner,
     });
   }, [searchParams]);
 
   return details;
 }
 
-// Countdown Timer Component
-function CountdownTimer() {
-  const bookingDetails = useBookingDetails();
-  const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-  const [status, setStatus] = useState<"counting" | "now" | "passed" | "hidden">("hidden");
+// Advisor data
+const ADVISORS_LIST = [
+  { fullName: "Edward Bertsch", name: "Edward", role: "HUM Family Advisor", initials: "EB" },
+  { fullName: "Alyeria Faith", name: "Alyeria", role: "HUM Family Advisor", initials: "AF" },
+];
 
-  useEffect(() => {
-    if (!bookingDetails?.targetDate) {
-      setStatus("hidden");
-      return;
-    }
+function findAdvisor(assignedTo: string) {
+  if (!assignedTo) return null;
+  const normalized = assignedTo.toLowerCase().trim();
+  return ADVISORS_LIST.find(a =>
+    a.fullName.toLowerCase() === normalized ||
+    a.name.toLowerCase() === normalized ||
+    normalized.includes(a.name.toLowerCase())
+  ) || null;
+}
 
-    const targetDate = bookingDetails.targetDate;
-
-    // Update countdown every second
-    const updateCountdown = () => {
-      const now = new Date();
-      const diff = targetDate.getTime() - now.getTime();
-
-      if (diff <= 0 && diff > -60000) {
-        // Within 1 minute of start time
-        setStatus("now");
-      } else if (diff <= -60000) {
-        // Past the start time
-        setStatus("passed");
-      } else {
-        setStatus("counting");
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-        setCountdown({ days, hours, minutes, seconds });
-      }
-    };
-
-    // Initial update
-    updateCountdown();
-
-    // Set interval
-    const interval = setInterval(updateCountdown, 1000);
-
-    return () => clearInterval(interval);
-  }, [bookingDetails]);
-
-  // Don't render if hidden
-  if (status === "hidden" || !bookingDetails) return null;
-
-  const { formattedDateTime, assignedTo } = bookingDetails;
-
+function AdvisorInitialAvatar({ initials }: { initials: string }) {
   return (
-    <section id="countdown" className="px-4 pt-2 pb-10 sm:pt-4 sm:pb-16 bg-[#fefdfb]">
-      <div className="max-w-[560px] mx-auto">
-        <div className="bg-[#f5f0e8] rounded-2xl sm:rounded-3xl px-6 py-8 sm:px-10 sm:py-10 text-center transition-all duration-300 hover:shadow-lg animate-on-load animate-fade-in-up animation-delay-300">
-          {status === "counting" && (
-            <>
-              <p className="text-[16px] sm:text-[18px] text-[#555] mb-4 sm:mb-6">
-                Your consultation is in:
-              </p>
-
-              {/* Countdown Display */}
-              <div className="flex justify-center gap-3 sm:gap-6 mb-6 sm:mb-8">
-                <div className="flex flex-col items-center">
-                  <span className="text-[26px] sm:text-[46px] font-semibold text-[#323B46] leading-none">
-                    {countdown.days}
-                  </span>
-                  <span className="text-[11px] sm:text-[12px] uppercase tracking-[0.1em] text-[#888] mt-1">
-                    days
-                  </span>
-                </div>
-                <div className="flex flex-col items-center">
-                  <span className="text-[26px] sm:text-[46px] font-semibold text-[#323B46] leading-none">
-                    {countdown.hours}
-                  </span>
-                  <span className="text-[11px] sm:text-[12px] uppercase tracking-[0.1em] text-[#888] mt-1">
-                    hours
-                  </span>
-                </div>
-                <div className="flex flex-col items-center">
-                  <span className="text-[26px] sm:text-[46px] font-semibold text-[#323B46] leading-none">
-                    {countdown.minutes}
-                  </span>
-                  <span className="text-[11px] sm:text-[12px] uppercase tracking-[0.1em] text-[#888] mt-1">
-                    minutes
-                  </span>
-                </div>
-                <div className="flex flex-col items-center">
-                  <span className="text-[26px] sm:text-[46px] font-semibold text-[#323B46] leading-none">
-                    {countdown.seconds}
-                  </span>
-                  <span className="text-[11px] sm:text-[12px] uppercase tracking-[0.1em] text-[#888] mt-1">
-                    seconds
-                  </span>
-                </div>
-              </div>
-            </>
-          )}
-
-          {status === "now" && (
-            <p className="text-[20px] sm:text-[28px] font-semibold text-[#b8926b] mb-4 sm:mb-6">
-              Your call is starting now!
-            </p>
-          )}
-
-          {status === "passed" && (
-            <p className="text-[16px] sm:text-[18px] text-[#555] mb-4 sm:mb-6">
-              Your call was scheduled for:
-            </p>
-          )}
-
-          {/* Date/Time Display */}
-          <p className="text-[16px] sm:text-[18px] text-[#323B46]">
-            {formattedDateTime}
-          </p>
-        </div>
-      </div>
-    </section>
+    <div className="w-8 h-8 rounded-full bg-[#b8926b] flex items-center justify-center flex-shrink-0">
+      <span className="text-white text-[11px] font-semibold">{initials}</span>
+    </div>
   );
 }
 
@@ -293,73 +207,63 @@ function CountdownTimer() {
 function DynamicCalendarCard() {
   const bookingDetails = useBookingDetails();
 
-  // Fallback values if no URL params
   const monthShort = bookingDetails?.monthShort || "TBD";
   const day = bookingDetails?.day || "";
   const weekdayShort = bookingDetails?.weekdayShort || "";
   const formattedDateTime = bookingDetails?.formattedDateTime || "Check your email for details";
   const assignedTo = bookingDetails?.assignedTo || "";
   const inviteeName = bookingDetails?.inviteeName || "";
+  const duration = bookingDetails?.duration || "";
+
+  const matchedAdvisor = findAdvisor(assignedTo);
 
   return (
-    <div className="bg-[#fefdfb] rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-      <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
-        {/* Calendar Icon */}
+    <div className="bg-[#f5f0e8] rounded-xl sm:rounded-2xl p-4 sm:p-5">
+      <div className="flex flex-col sm:flex-row gap-4 sm:gap-5">
         <div className="flex-shrink-0 self-center sm:self-start">
-          <div className="bg-white rounded-xl shadow-sm overflow-hidden w-20 sm:w-28">
-            <div className="bg-[#b8926b] text-white text-xs sm:text-base font-medium py-1.5 sm:py-2 text-center">
+          <div className="bg-white rounded-xl shadow-sm overflow-hidden w-20 sm:w-24">
+            <div className="bg-[#b8926b] text-white text-xs sm:text-sm font-medium py-1.5 text-center">
               {monthShort}
             </div>
             <div className="py-3 sm:py-4 text-center bg-white">
-              <div className="text-3xl sm:text-5xl font-light text-[#323B46] leading-none">
+              <div className="text-3xl sm:text-4xl font-light text-[#323B46] leading-none">
                 {day || "?"}
               </div>
-              <div className="text-xs sm:text-base text-[#888] mt-1">{weekdayShort || "---"}</div>
+              <div className="text-xs text-[#888] mt-1">{weekdayShort || "---"}</div>
             </div>
           </div>
         </div>
 
-        {/* Event Details */}
         <div className="flex-1 min-w-0">
-          <h4 className="font-bold text-[14px] sm:text-[17px] text-[#323B46] mb-2 sm:mb-3">
-            Your HUM Consultation Is Booked
+          <h4 className="font-bold text-[14px] sm:text-[16px] text-[#323B46] mb-2">
+            Your HUM Consultation
           </h4>
-          <div className="space-y-1 sm:space-y-1.5 text-[14px] sm:text-[15px]">
+          <div className="space-y-1 sm:space-y-1.5 text-[13px] sm:text-[14px]">
             <div className="flex">
-              <span className="text-[#888] w-12 sm:w-14 flex-shrink-0">When</span>
+              <span className="text-[#888] w-14 flex-shrink-0">When</span>
               <span className="text-[#555]">{formattedDateTime}</span>
             </div>
             <div className="flex">
-              <span className="text-[#888] w-12 sm:w-14 flex-shrink-0">Where</span>
-              <span className="text-[#555]">Zoom (check your email)</span>
+              <span className="text-[#888] w-14 flex-shrink-0">Where</span>
+              <span className="text-[#555]">Zoom, link in your email</span>
             </div>
-            {(inviteeName || assignedTo) && (
+            {duration && (
               <div className="flex">
-                <span className="text-[#888] w-12 sm:w-14 flex-shrink-0">Who</span>
-                <span className="text-[#555]">
-                  {inviteeName && assignedTo
-                    ? `${inviteeName} & ${assignedTo}`
-                    : inviteeName || `You & ${assignedTo}`}
-                </span>
+                <span className="text-[#888] w-14 flex-shrink-0">Length</span>
+                <span className="text-[#555]">{duration} min. We&apos;ll stay on if there&apos;s more to cover</span>
               </div>
             )}
           </div>
 
-          {/* RSVP Buttons */}
-          <div className="flex gap-1.5 sm:gap-2 mt-3 sm:mt-4">
-            <button className="flex items-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-2.5 sm:py-3 bg-[#6b8e5e] text-white text-[12px] sm:text-[13px] font-medium rounded-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6b8e5e] focus-visible:ring-offset-2">
-              <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              Yes
-            </button>
-            <button className="px-3 sm:px-4 py-2.5 sm:py-3 bg-white border border-[#ddd] text-[#555] text-[12px] sm:text-[13px] font-medium rounded-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-[#bbb] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b8926b] focus-visible:ring-offset-2">
-              Maybe
-            </button>
-            <button className="px-3 sm:px-4 py-2.5 sm:py-3 bg-white border border-[#ddd] text-[#555] text-[12px] sm:text-[13px] font-medium rounded-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-[#bbb] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b8926b] focus-visible:ring-offset-2">
-              No
-            </button>
-          </div>
+          {matchedAdvisor && (
+            <div className="flex items-center gap-2.5 mt-3 pt-3 border-t border-[#e5ddd0]">
+              <AdvisorInitialAvatar initials={matchedAdvisor.initials} />
+              <div>
+                <p className="text-[13px] font-semibold text-[#323B46]">{matchedAdvisor.name}</p>
+                <p className="text-[11px] text-[#888]">{matchedAdvisor.role}</p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -441,8 +345,7 @@ function AudioPlayer() {
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
-    <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm transition-all duration-300 hover:shadow-lg">
-      {/* Hidden audio element */}
+    <div className="bg-[#1a1a1a] rounded-2xl sm:rounded-3xl p-5 sm:p-8 lg:p-10 shadow-2xl transition-all duration-500 hover:shadow-[0_20px_60px_-10px_rgba(0,0,0,0.4)]">
       <audio
         ref={audioRef}
         src="/audio/dancing-with-your-daughters.m4a"
@@ -454,59 +357,53 @@ function AudioPlayer() {
         onEnded={handleEnded}
       />
 
-      {/* Song Title */}
-      <div className="flex items-center gap-3 mb-4">
-        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg overflow-hidden flex-shrink-0">
+      {/* Album art + song info — cinematic layout */}
+      <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 mb-6 sm:mb-8">
+        <div className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-xl overflow-hidden flex-shrink-0 shadow-lg ring-1 ring-white/10">
           <img
             src="/audio/cover-photo.png"
             alt="Dancing With Your Daughters"
             className="w-full h-full object-cover object-[center_10%]" style={{ transform: 'scaleX(-1) scale(1.2)' }}
           />
         </div>
-        <div>
-          <h4 className="font-semibold text-[14px] sm:text-[16px] text-[#1a1a1a]">
+        <div className="text-center sm:text-left">
+          <p className="text-[11px] sm:text-[12px] uppercase tracking-[0.2em] text-[#b8926b] mb-1">Unreleased</p>
+          <h4 className="font-semibold text-[18px] sm:text-[22px] lg:text-[24px] text-white leading-tight mb-1">
             Dancing With Your Daughters
           </h4>
-          <p className="text-[12px] sm:text-[13px] text-[#666]">The song behind the mission</p>
+          <p className="text-[13px] sm:text-[14px] text-[#888]">The song behind the mission</p>
         </div>
       </div>
 
       {/* Player Controls */}
       <div className="flex items-center gap-3 sm:gap-4">
-        {/* Play/Pause Button */}
         <button
           onClick={togglePlay}
-          className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-black flex items-center justify-center flex-shrink-0 transition-all duration-200 hover:bg-[#333] hover:scale-110 hover:shadow-lg active:scale-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b8926b] focus-visible:ring-offset-2"
+          className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#b8926b] flex items-center justify-center flex-shrink-0 transition-all duration-200 hover:bg-[#c9a37c] hover:scale-105 hover:shadow-lg hover:shadow-[#b8926b]/20 active:scale-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b8926b] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1a1a]"
           aria-label={isPlaying ? "Pause" : "Play"}
         >
           {isPlaying ? (
-            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
               <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
             </svg>
           ) : (
-            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
               <path d="M8 5v14l11-7z" />
             </svg>
           )}
         </button>
 
-        {/* Progress Section */}
         <div className="flex-1 min-w-0">
-          {/* Progress Bar with visible scrubber */}
           <div className="relative h-6 flex items-center group">
-            {/* Track background */}
-            <div className="absolute left-0 right-0 h-1.5 sm:h-2 bg-[#e5e5e5] rounded-full" />
-            {/* Progress fill */}
+            <div className="absolute left-0 right-0 h-1.5 sm:h-2 bg-[#333] rounded-full" />
             <div
-              className="absolute left-0 h-1.5 sm:h-2 bg-black rounded-full pointer-events-none"
+              className="absolute left-0 h-1.5 sm:h-2 bg-[#b8926b] rounded-full pointer-events-none"
               style={{ width: `${progress}%` }}
             />
-            {/* Scrubber thumb */}
             <div
-              className="absolute w-3.5 h-3.5 sm:w-4 sm:h-4 bg-black rounded-full shadow-md pointer-events-none transform -translate-x-1/2 transition-transform group-hover:scale-110"
+              className="absolute w-3.5 h-3.5 sm:w-4 sm:h-4 bg-[#b8926b] rounded-full shadow-md pointer-events-none transform -translate-x-1/2 transition-transform group-hover:scale-110 ring-2 ring-[#1a1a1a]"
               style={{ left: `${progress}%` }}
             />
-            {/* Invisible range input for interaction */}
             <input
               type="range"
               min="0"
@@ -518,8 +415,6 @@ function AudioPlayer() {
               aria-label="Seek"
             />
           </div>
-
-          {/* Time Display */}
           <div className="flex justify-between mt-1">
             <span className="text-[11px] sm:text-[12px] text-[#666] tabular-nums">
               {formatTime(currentTime)}
@@ -530,19 +425,18 @@ function AudioPlayer() {
           </div>
         </div>
 
-        {/* Volume Control - Hidden on mobile */}
         <div className="hidden sm:flex items-center gap-2">
           <svg className="w-4 h-4 text-[#666]" fill="currentColor" viewBox="0 0 24 24">
             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" />
           </svg>
           <div className="relative w-20 h-5 flex items-center group">
-            <div className="absolute left-0 right-0 h-1.5 bg-[#e5e5e5] rounded-full" />
+            <div className="absolute left-0 right-0 h-1.5 bg-[#333] rounded-full" />
             <div
               className="absolute left-0 h-1.5 bg-[#666] rounded-full pointer-events-none"
               style={{ width: `${volume * 100}%` }}
             />
             <div
-              className="absolute w-3 h-3 bg-[#666] rounded-full shadow-sm pointer-events-none transform -translate-x-1/2"
+              className="absolute w-3 h-3 bg-[#888] rounded-full shadow-sm pointer-events-none transform -translate-x-1/2"
               style={{ left: `${volume * 100}%` }}
             />
             <input
@@ -559,8 +453,7 @@ function AudioPlayer() {
         </div>
       </div>
 
-      {/* Privacy Note */}
-      <p className="text-[12px] sm:text-[13px] text-[#777] text-center mt-4 italic">
+      <p className="text-[12px] sm:text-[13px] text-[#555] text-center mt-5 italic">
         This song is shared with you personally. Please don&apos;t distribute.
       </p>
     </div>
@@ -570,11 +463,9 @@ function AudioPlayer() {
 // Section definitions for navigation
 const SECTIONS = [
   { id: 'hero', label: 'Welcome' },
-  { id: 'countdown', label: 'Countdown' },
-  { id: 'timeline', label: 'What\'s Next' },
-  { id: 'step-1', label: 'Step 1' },
-  { id: 'step-2', label: 'Step 2' },
-  { id: 'step-3', label: 'Step 3' },
+  { id: 'expect', label: 'What to Expect' },
+  { id: 'checklist', label: 'Before the Call' },
+  { id: 'families', label: 'From Families' },
   { id: 'letter', label: 'Personal Note' },
 ];
 
@@ -817,7 +708,7 @@ function ExpandableLetter() {
         className={`w-full flex items-center justify-center gap-2 py-3.5 sm:py-4 px-6 rounded-xl text-[15px] sm:text-[16px] font-semibold transition-all duration-200 ${
           isExpanded
             ? 'text-[#888] hover:text-[#666]'
-            : 'bg-[#323B46] text-white hover:bg-[#1a1a1a] hover:-translate-y-0.5 hover:shadow-lg'
+            : 'bg-[#1a1a1a] text-white hover:bg-black hover:-translate-y-0.5 hover:shadow-lg'
         }`}
       >
         {isExpanded ? (
@@ -925,43 +816,153 @@ function ExpandableLetter() {
   );
 }
 
-// Personalized Hero Component
+// Pre-Call Guide Step (routes to persona-specific page)
+function PreCallGuideStep() {
+  const bookingDetails = useBookingDetails();
+  const persona = bookingDetails?.persona || "mom";
+  const guideHref = "https://slaw-floral-56242297.figma.site";
+
+  return (
+    <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-sm transition-all duration-300 hover:shadow-lg">
+      <div className="flex items-start gap-4">
+        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#b8926b] flex items-center justify-center flex-shrink-0 mt-0.5">
+          <span className="text-white text-sm sm:text-base font-semibold">3</span>
+        </div>
+        <div className="flex-1 min-w-0">
+          <h3 className="font-semibold text-[16px] sm:text-[18px] text-[#323B46] mb-2">
+            Read the pre-call guide
+          </h3>
+          <p className="text-[14px] sm:text-[15px] text-[#555] leading-relaxed mb-4">
+            A short guide covering what we&apos;ll discuss and a few questions worth bringing to the table. Share it with your partner so you&apos;re both on the same page.
+          </p>
+        </div>
+      </div>
+      <div className="mt-4">
+        <Link
+          href={guideHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full flex items-center justify-center gap-2 py-3.5 sm:py-4 px-6 bg-[#1a1a1a] text-white font-semibold rounded-xl text-[15px] sm:text-[16px] transition-all duration-200 hover:bg-black hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b8926b] focus-visible:ring-offset-2"
+        >
+          Read the Pre-Call Guide
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+// Personalized Hero Component — lean, focused confirmation + countdown
 function PersonalizedHero() {
   const bookingDetails = useBookingDetails();
+  const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [timerStatus, setTimerStatus] = useState<"counting" | "now" | "passed" | "hidden">("hidden");
 
-  // Extract first name from invitee name
   const firstName = bookingDetails?.inviteeName
     ? bookingDetails.inviteeName.split(" ")[0]
     : "";
 
+  useEffect(() => {
+    if (!bookingDetails?.targetDate) {
+      setTimerStatus("hidden");
+      return;
+    }
+
+    const targetDate = bookingDetails.targetDate;
+
+    const updateCountdown = () => {
+      const now = new Date();
+      const diff = targetDate.getTime() - now.getTime();
+
+      if (diff <= 0 && diff > -60000) {
+        setTimerStatus("now");
+      } else if (diff <= -60000) {
+        setTimerStatus("passed");
+      } else {
+        setTimerStatus("counting");
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        setCountdown({ days, hours, minutes, seconds });
+      }
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+    return () => clearInterval(interval);
+  }, [bookingDetails]);
+
   return (
-    <section id="hero" className="px-4 pt-4 pb-6 sm:pt-8 sm:pb-12 bg-[#fefdfb]">
-      <div className="max-w-2xl mx-auto text-center">
-        {/* Top Label */}
-        <p className="text-[11px] sm:text-[12px] uppercase tracking-[0.2em] text-[#b8926b] mb-4 sm:mb-6 animate-on-load animate-fade-in-up">
+    <section id="hero" className="relative px-4 pt-8 pb-10 sm:pt-16 sm:pb-20 lg:pt-24 lg:pb-28 bg-[#fefdfb] overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none" style={{
+        background: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(184,146,107,0.04) 0%, transparent 70%)',
+      }} />
+
+      <div className="relative max-w-4xl mx-auto text-center">
+        <p className="text-[11px] sm:text-[12px] uppercase tracking-[0.3em] text-[#b8926b] mb-6 sm:mb-10 animate-on-load animate-fade-in-up">
           CALL SCHEDULED
         </p>
 
-        {/* Main Headline */}
-        <h1 className="text-[28px] sm:text-[44px] md:text-[52px] font-semibold text-[#323B46] leading-[1.15] tracking-tight mb-3 sm:mb-5 animate-on-load animate-fade-in-up animation-delay-100">
-          {firstName ? (
-            <>Congratulations {firstName},<br />You&apos;re Booked!</>
-          ) : (
-            <>Congratulations,<br />You&apos;re Booked!</>
-          )}
+        <h1 className="text-[28px] sm:text-[40px] md:text-[48px] lg:text-[56px] font-bold text-[#323B46] leading-[1.12] tracking-[-0.02em] mb-5 sm:mb-8 animate-on-load animate-fade-in-up animation-delay-100">
+          {firstName && <>{firstName}, </>}You Just Took the First Step Toward Bringing Your Family Closer&nbsp;Together
         </h1>
 
-        {/* Description */}
-        <p className="text-[16px] sm:text-[20px] text-[#555] max-w-xl mx-auto mb-3 sm:mb-5 leading-relaxed px-2 sm:px-0 animate-on-load animate-fade-in-up animation-delay-200">
-          Your life is about to get a whole lot easier. Please take a moment now to read through everything on this page. It&apos;s essential to getting the most out of our time together. Be sure to check your email and phone for additional details.
+        <p className="text-[16px] sm:text-[20px] md:text-[22px] text-[#555] max-w-2xl mx-auto mb-8 sm:mb-12 leading-relaxed px-2 sm:px-0 animate-on-load animate-fade-in-up animation-delay-200">
+          You already know there&apos;s a better way to run your home. We&apos;re going to show you exactly what that looks like.
         </p>
 
-        {/* Open loop - creates curiosity */}
-        <p className="text-[14px] sm:text-[15px] text-[#b8926b] max-w-md mx-auto mb-4 sm:mb-8 px-2 sm:px-0 animate-on-load animate-fade-in-up animation-delay-300 italic">
+        {/* Integrated Countdown Timer */}
+        {timerStatus !== "hidden" && bookingDetails && (
+          <div className="max-w-[560px] mx-auto mb-8 sm:mb-12 animate-on-load animate-fade-in-up animation-delay-300">
+            <div className="relative bg-[#f5f0e8] noise-texture rounded-2xl sm:rounded-3xl px-6 py-8 sm:px-10 sm:py-10 text-center transition-all duration-300 hover:shadow-lg">
+              {timerStatus === "counting" && (
+                <>
+                  <p className="relative z-10 text-[14px] sm:text-[16px] text-[#555] mb-4 sm:mb-6">
+                    Your consultation is in:
+                  </p>
+                  <div className="relative z-10 flex justify-center gap-3 sm:gap-6 mb-6 sm:mb-8">
+                    {[
+                      { value: countdown.days, label: "days" },
+                      { value: countdown.hours, label: "hours" },
+                      { value: countdown.minutes, label: "minutes" },
+                      { value: countdown.seconds, label: "seconds" },
+                    ].map((unit) => (
+                      <div key={unit.label} className="flex flex-col items-center">
+                        <span className="text-[26px] sm:text-[46px] font-semibold text-[#323B46] leading-none">
+                          {unit.value}
+                        </span>
+                        <span className="text-[11px] sm:text-[12px] uppercase tracking-[0.1em] text-[#888] mt-1">
+                          {unit.label}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+              {timerStatus === "now" && (
+                <p className="relative z-10 text-[20px] sm:text-[28px] font-semibold text-[#b8926b] mb-4 sm:mb-6">
+                  Your call is starting now!
+                </p>
+              )}
+              {timerStatus === "passed" && (
+                <p className="relative z-10 text-[16px] sm:text-[18px] text-[#555] mb-4 sm:mb-6">
+                  Your call was scheduled for:
+                </p>
+              )}
+              <p className="relative z-10 text-[16px] sm:text-[18px] text-[#323B46]">
+                {bookingDetails.formattedDateTime}
+              </p>
+            </div>
+          </div>
+        )}
+
+        <p className="text-[14px] sm:text-[16px] text-[#b8926b] max-w-md mx-auto mb-4 sm:mb-8 px-2 sm:px-0 animate-on-load animate-fade-in-up animation-delay-300 italic">
           P.S. There&apos;s something personal waiting for you at the end of this page. A gift we&apos;ve never shared publicly.
         </p>
 
-        {/* Scroll indicator - mobile only */}
         <div className="sm:hidden flex flex-col items-center animate-bounce-subtle">
           <span className="text-[11px] uppercase tracking-[0.15em] text-[#999] mb-1">Scroll</span>
           <svg className="w-5 h-5 text-[#b8926b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -998,8 +999,8 @@ export default function BookedPage() {
         /* Scroll reveal animations */
         .scroll-reveal {
           opacity: 0;
-          transform: translateY(20px);
-          transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+          transform: translateY(30px);
+          transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .scroll-revealed {
           opacity: 1;
@@ -1008,6 +1009,16 @@ export default function BookedPage() {
         /* Safe area for iOS devices */
         .safe-area-pb {
           padding-bottom: env(safe-area-inset-bottom, 8px);
+        }
+        /* Noise texture overlay for premium tactile feel */
+        .noise-texture::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+          pointer-events: none;
+          z-index: 1;
+          border-radius: inherit;
         }
       `}</style>
 
@@ -1038,265 +1049,225 @@ export default function BookedPage() {
       </Suspense>
 
       {/* ===================================================================
-          COUNTDOWN TIMER - Time Until Consultation
+          WHAT TO EXPECT ON YOUR CALL
       =================================================================== */}
-      <Suspense fallback={null}>
-        <CountdownTimer />
-      </Suspense>
-
-      {/* ===================================================================
-          WHAT HAPPENS NEXT - Timeline Section
-      =================================================================== */}
-      <section id="timeline" className="px-4 py-8 sm:py-16 bg-[#f5f0e8]">
-        <div className="max-w-4xl mx-auto scroll-reveal">
-          {/* Section Header */}
-          <h2 className="text-[26px] sm:text-[36px] md:text-[42px] font-semibold text-[#323B46] leading-tight mb-8 sm:mb-12 text-center">
-            What Happens Next
+      <section id="expect" className="relative px-4 py-12 sm:py-20 lg:py-24 bg-[#f5f0e8] noise-texture overflow-hidden">
+        <div className="relative z-10 max-w-4xl mx-auto scroll-reveal">
+          <h2 className="text-[26px] sm:text-[36px] md:text-[42px] lg:text-[48px] font-semibold text-[#323B46] leading-tight tracking-[-0.01em] mb-3 sm:mb-4 text-center">
+            What to Expect on Your Call
           </h2>
+          <p className="text-[15px] sm:text-[17px] text-[#555] text-center mb-8 sm:mb-10 max-w-lg mx-auto leading-relaxed">
+            A relaxed, honest 30-minute conversation about what&apos;s possible for your family.
+          </p>
 
-          {/* Timeline - Desktop (horizontal) */}
-          <div className="hidden md:block">
-            <div className="relative">
-              {/* Connector Line */}
-              <div className="absolute top-4 left-[16.67%] right-[16.67%] h-[2px] bg-[#e0d8cd]" />
-
-              {/* Timeline Steps */}
-              <div className="grid grid-cols-3 gap-4">
-                {/* Step 1 - TODAY (highlighted) */}
-                <div className="flex flex-col items-center text-center">
-                  <div className="w-8 h-8 rounded-full bg-[#b8926b] flex items-center justify-center mb-4 relative z-10 ring-4 ring-[#f5f0e8]">
-                    <span className="text-white text-sm font-semibold">1</span>
-                  </div>
-                  <p className="text-[12px] uppercase tracking-[0.15em] font-semibold text-[#b8926b] mb-2">
-                    TODAY
-                  </p>
-                  <p className="text-[15px] sm:text-[15px] text-[#555] leading-relaxed">
-                    Accept your calendar invite, confirm your partner can join, and review the pre-call guide
-                  </p>
-                </div>
-
-                {/* Step 2 - On The Call */}
-                <div className="flex flex-col items-center text-center">
-                  <div className="w-8 h-8 rounded-full bg-[#d4ccc0] flex items-center justify-center mb-4 relative z-10 ring-4 ring-[#f5f0e8]">
-                    <span className="text-white text-sm font-semibold">2</span>
-                  </div>
-                  <p className="text-[12px] uppercase tracking-[0.15em] font-semibold text-[#888] mb-2">
-                    ON THE CALL
-                  </p>
-                  <p className="text-[15px] sm:text-[15px] text-[#555] leading-relaxed">
-                    We&apos;ll meet with both of you to understand your needs and see if HUM is the right fit
-                  </p>
-                </div>
-
-                {/* Step 3 - After */}
-                <div className="flex flex-col items-center text-center">
-                  <div className="w-8 h-8 rounded-full bg-[#d4ccc0] flex items-center justify-center mb-4 relative z-10 ring-4 ring-[#f5f0e8]">
-                    <span className="text-white text-sm font-semibold">3</span>
-                  </div>
-                  <p className="text-[12px] uppercase tracking-[0.15em] font-semibold text-[#888] mb-2">
-                    AFTER
-                  </p>
-                  <p className="text-[15px] sm:text-[15px] text-[#555] leading-relaxed">
-                    If it makes sense, we&apos;ll show you exactly how to get started
-                  </p>
-                </div>
+          {/* What to expect — checklist + how the call feels */}
+          <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 lg:p-10 shadow-sm max-w-2xl mx-auto mb-8 sm:mb-10">
+            <p className="text-[13px] sm:text-[14px] uppercase tracking-[0.15em] text-[#b8926b] font-semibold mb-3 sm:mb-4">
+              By the end of your call, you&apos;ll know:
+            </p>
+            <div className="space-y-2.5 sm:space-y-3">
+              <div className="flex items-start gap-3">
+                <svg className="w-5 h-5 text-[#b8926b] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <p className="text-[14px] sm:text-[16px] text-[#555]">Exactly what a HUM house manager would handle in your home</p>
               </div>
+              <div className="flex items-start gap-3">
+                <svg className="w-5 h-5 text-[#b8926b] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <p className="text-[14px] sm:text-[16px] text-[#555]">How the process works from placement to your first Monday morning off</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <svg className="w-5 h-5 text-[#b8926b] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <p className="text-[14px] sm:text-[16px] text-[#555]">Whether this is the right fit for your family. And if it&apos;s not, we&apos;ll tell you</p>
+              </div>
+            </div>
+
+            <div className="border-t border-[#f0ebe0] mt-6 pt-6">
+              <p className="text-[14px] sm:text-[16px] text-[#555] leading-[1.8] sm:leading-[1.9]">
+                We&apos;ll start by listening. You&apos;ll tell us about your family, your home, and what&apos;s not working. Then we&apos;ll walk through how HUM could help, tailored to your specific situation.
+              </p>
             </div>
           </div>
 
-          {/* Timeline - Mobile (vertical) */}
-          <div className="md:hidden">
-            <div className="relative pl-12">
-              {/* Vertical Connector Line */}
-              <div className="absolute left-[28px] top-4 bottom-4 w-[2px] bg-[#e0d8cd]" />
-
-              {/* Step 1 - TODAY (highlighted) */}
-              <div className="relative pb-8">
-                <div className="absolute left-[-36px] w-8 h-8 rounded-full bg-[#b8926b] flex items-center justify-center ring-4 ring-[#f5f0e8]">
-                  <span className="text-white text-sm font-semibold">1</span>
-                </div>
-                <div className="pt-1">
-                  <p className="text-[12px] uppercase tracking-[0.15em] font-semibold text-[#b8926b] mb-1">
-                    TODAY
-                  </p>
-                  <p className="text-[15px] sm:text-[15px] text-[#555] leading-relaxed">
-                    Accept your calendar invite, confirm your partner can join, and review the pre-call guide
-                  </p>
-                </div>
-              </div>
-
-              {/* Step 2 - On The Call */}
-              <div className="relative pb-8">
-                <div className="absolute left-[-36px] w-8 h-8 rounded-full bg-[#d4ccc0] flex items-center justify-center ring-4 ring-[#f5f0e8]">
-                  <span className="text-white text-sm font-semibold">2</span>
-                </div>
-                <div className="pt-1">
-                  <p className="text-[12px] uppercase tracking-[0.15em] font-semibold text-[#888] mb-1">
-                    ON THE CALL
-                  </p>
-                  <p className="text-[15px] sm:text-[15px] text-[#555] leading-relaxed">
-                    We&apos;ll meet with both of you to understand your needs and see if HUM is the right fit
-                  </p>
-                </div>
-              </div>
-
-              {/* Step 3 - After */}
-              <div className="relative">
-                <div className="absolute left-[-36px] w-8 h-8 rounded-full bg-[#d4ccc0] flex items-center justify-center ring-4 ring-[#f5f0e8]">
-                  <span className="text-white text-sm font-semibold">3</span>
-                </div>
-                <div className="pt-1">
-                  <p className="text-[12px] uppercase tracking-[0.15em] font-semibold text-[#888] mb-1">
-                    AFTER
-                  </p>
-                  <p className="text-[15px] sm:text-[15px] text-[#555] leading-relaxed">
-                    If it makes sense, we&apos;ll show you exactly how to get started
-                  </p>
-                </div>
-              </div>
-            </div>
+          {/* Scarcity — authentic capacity limit */}
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 sm:p-5 text-center shadow-sm max-w-2xl mx-auto">
+            <p className="text-[13px] sm:text-[14px] text-[#555]">
+              <span className="font-semibold text-[#323B46]">We onboard just 20 families per month.</span> We&apos;re a small team that never takes on more than we can deliver at the highest level. Your call slot is&nbsp;reserved.
+            </p>
           </div>
         </div>
       </section>
 
       {/* ===================================================================
-          STEP 1 - Accept Calendar Invite
+          THREE THINGS BEFORE YOUR CALL — Condensed Checklist
       =================================================================== */}
-      <section id="step-1" className="px-4 py-8 sm:py-16 bg-[#fefdfb]">
+      <section id="checklist" className="px-4 py-12 sm:py-20 lg:py-24 bg-[#fefdfb]">
         <div className="max-w-2xl mx-auto scroll-reveal">
-          {/* Section Header */}
-          <p className="text-[11px] sm:text-[12px] uppercase tracking-[0.2em] text-[#b8926b] mb-2 sm:mb-3 text-center">
-            STEP 1: ACCEPT YOUR CALENDAR INVITE
+          <h2 className="text-[26px] sm:text-[36px] md:text-[42px] lg:text-[48px] font-semibold text-[#323B46] leading-tight tracking-[-0.01em] mb-3 sm:mb-4 text-center">
+            Three Things to Do<br className="hidden sm:inline" /> Before Your Call
+          </h2>
+          <p className="text-[15px] sm:text-[17px] text-[#555] text-center mb-10 sm:mb-14 max-w-lg mx-auto leading-relaxed">
+            Takes about 3 minutes. Each one makes our time together more productive.
           </p>
 
-          <h2 className="text-[26px] sm:text-[44px] md:text-[42px] font-semibold text-[#323B46] leading-tight mb-6 sm:mb-10 text-center">
-            Confirm Your Call
-          </h2>
+          <div className="space-y-4 sm:space-y-5">
+            {/* Step 1 — Accept Calendar Invite */}
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-sm transition-all duration-300 hover:shadow-lg">
+              <div className="flex items-start gap-4">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#b8926b] flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <span className="text-white text-sm sm:text-base font-semibold">1</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-[16px] sm:text-[18px] text-[#323B46] mb-2">
+                    Accept your calendar invite
+                  </h3>
+                  <p className="text-[14px] sm:text-[15px] text-[#555] leading-relaxed">
+                    Open the confirmation email we just sent and click &ldquo;Yes&rdquo; on the calendar invite. It won&apos;t appear on your calendar until you do. We don&apos;t want you to miss this.
+                  </p>
+                </div>
+              </div>
+              <Suspense fallback={null}>
+                <div className="mt-4">
+                  <DynamicCalendarCard />
+                </div>
+              </Suspense>
+            </div>
 
-          {/* Calendar Card */}
-          <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-            <h3 className="text-[15px] sm:text-[20px] font-semibold text-[#323B46] mb-2">
-              Click yes on the calendar invite that was sent to your email. It won&apos;t show up on your calendar unless you do this, and you risk missing your appointment.
-            </h3>
+            {/* Step 2 — Bring Your Partner */}
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-sm transition-all duration-300 hover:shadow-lg">
+              <div className="flex items-start gap-4">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#b8926b] flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <span className="text-white text-sm sm:text-base font-semibold">2</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-[16px] sm:text-[18px] text-[#323B46] mb-2">
+                    Invite your partner to join
+                  </h3>
+                  <p className="text-[14px] sm:text-[15px] text-[#555] leading-relaxed mb-3">
+                    Your call will be most productive with both decision-makers present. Families who do this together tell us it&apos;s the best conversation they&apos;ve had about their home in years.
+                  </p>
+                  <p className="text-[14px] sm:text-[15px] text-[#555] leading-relaxed">
+                    If you added their email when booking, they already have the invite. Make sure they accept it too. If not, forward the calendar event and add them directly.
+                  </p>
+                  <p className="text-[13px] text-[#888] mt-3 italic">
+                    Flying solo or the only decision-maker? No problem. Skip this one.
+                  </p>
+                </div>
+              </div>
+            </div>
 
-            {/* Dynamic Calendar Invite Preview */}
+            {/* Step 3 — Read the Pre-Call Guide */}
             <Suspense fallback={null}>
-              <DynamicCalendarCard />
+              <PreCallGuideStep />
             </Suspense>
           </div>
         </div>
       </section>
 
       {/* ===================================================================
-          STEP 2 - Bring Your Partner
+          FROM FAMILIES WHO'VE BEEN HERE — Social Proof
       =================================================================== */}
-      <section id="step-2" className="px-4 py-8 sm:py-16 bg-[#fefdfb]">
-        <div className="max-w-2xl mx-auto scroll-reveal">
-          {/* Section Header */}
-          <p className="text-[11px] sm:text-[12px] uppercase tracking-[0.2em] text-[#b8926b] mb-2 sm:mb-3 text-center">
-            STEP 2: THIS IS THE MOST IMPORTANT STEP
+      <section id="families" className="relative px-4 py-12 sm:py-20 lg:py-24 bg-[#f5f0e8] noise-texture overflow-hidden">
+        <div className="relative z-10 max-w-5xl mx-auto scroll-reveal">
+          <p className="text-[11px] sm:text-[12px] uppercase tracking-[0.3em] text-[#b8926b] mb-10 sm:mb-14 text-center">
+            FROM FAMILIES WHO&apos;VE BEEN HERE
           </p>
 
-          <h2 className="text-[26px] sm:text-[44px] md:text-[42px] font-semibold text-[#323B46] leading-tight mb-6 sm:mb-10 text-center">
-            Bring Your Partner<br />
-            to the Call
-          </h2>
+          <div className="grid md:grid-cols-2 gap-4 sm:gap-5">
 
-          {/* Main Card */}
-          <div className="bg-[#f5f0e8] rounded-2xl sm:rounded-3xl p-4 sm:p-8 transition-all duration-300 hover:shadow-lg">
-            <h3 className="text-[15px] sm:text-[20px] font-semibold text-[#323B46] mb-4">
-              If you have a spouse or partner involved in household decisions, we need them on this call.
-            </h3>
-
-            <p className="text-[14px] sm:text-[15px] text-[#555] mb-6 leading-relaxed">
-              This is a requirement to speak with our team. This enables both of you to:
-            </p>
-
-            {/* Benefits */}
-            <div className="space-y-3 mb-6">
-              <div className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-[#b8926b] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <p className="text-[14px] sm:text-[15px] text-[#555]">
-                  <span className="font-semibold text-[#323B46]">Make confident decisions together</span>
-                </p>
+            {/* Sandi — emotional connection */}
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-sm">
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className="w-8 h-8 rounded-full bg-[#f5f0e8] flex items-center justify-center flex-shrink-0">
+                  <span className="text-[12px] font-semibold text-[#b8926b]">S</span>
+                </div>
+                <p className="text-[13px] sm:text-[14px] font-semibold text-[#323B46]">Sandi</p>
               </div>
-
-              <div className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-[#b8926b] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <p className="text-[14px] sm:text-[15px] text-[#555]">
-                  <span className="font-semibold text-[#323B46]">Get all your questions answered at once</span>
-                </p>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-[#b8926b] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <p className="text-[14px] sm:text-[15px] text-[#555]">
-                  <span className="font-semibold text-[#323B46]">Save weeks of back-and-forth</span>
-                </p>
+              <div className="space-y-2">
+                <div className="bg-[#f5f5f5] rounded-2xl rounded-tl-md px-4 py-2.5 inline-block">
+                  <p className="text-[14px] sm:text-[16px] text-[#1a1a1a]">She&apos;s my person ❤️</p>
+                </div>
+                <div className="bg-[#f5f5f5] rounded-2xl rounded-tl-md px-4 py-2.5 inline-block">
+                  <p className="text-[14px] sm:text-[16px] text-[#1a1a1a]">I&apos;d like her to be ours immediately. And forever.</p>
+                </div>
               </div>
             </div>
 
-            {/* Instructions */}
-            <p className="text-[14px] sm:text-[15px] text-[#555] leading-relaxed">
-              If you added their email when booking, they already have the invite. Make sure they accept it or it won&apos;t appear on their calendar. If not, open the calendar event and add them directly.
-            </p>
-          </div>
+            {/* Michael — excitement */}
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-sm">
+              <div className="flex items-center gap-2.5 mb-4">
+                <img src="/testimonials/michael.png" alt="" className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
+                <p className="text-[13px] sm:text-[14px] font-semibold text-[#323B46]">Michael</p>
+              </div>
+              <div className="bg-[#f5f5f5] rounded-2xl rounded-tl-md px-4 py-2.5 inline-block">
+                <p className="text-[14px] sm:text-[16px] text-[#1a1a1a]">Brianna is hired!!! She ROCKED it today, I told her on the spot</p>
+              </div>
+            </div>
 
-          {/* Reassurance - matches the "Why this matters" pattern */}
-          <p className="text-[13px] sm:text-[14px] text-[#888] text-center mt-6">
-            Single or the only decision-maker? No problem, just skip this step.
-          </p>
-        </div>
-      </section>
+            {/* Tommy & Suzi — outcome */}
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-sm">
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className="w-8 h-8 rounded-full bg-[#f5f0e8] flex items-center justify-center flex-shrink-0">
+                  <span className="text-[12px] font-semibold text-[#b8926b]">T</span>
+                </div>
+                <p className="text-[13px] sm:text-[14px] font-semibold text-[#323B46]">Tommy &amp; Suzi</p>
+              </div>
+              <div className="bg-[#f5f5f5] rounded-2xl rounded-tl-md px-4 py-2.5 inline-block">
+                <p className="text-[14px] sm:text-[16px] text-[#1a1a1a]">Life now feels calmer, more organized, and honestly just easier. Having the right house manager in place has taken a huge weight off our shoulders.</p>
+              </div>
+            </div>
 
-      {/* ===================================================================
-          STEP 3 - Download Pre-Call Guide
-      =================================================================== */}
-      <section id="step-3" className="px-4 py-8 sm:py-16 bg-[#fefdfb]">
-        <div className="max-w-2xl mx-auto text-center scroll-reveal">
-          {/* Section Header */}
-          <p className="text-[11px] sm:text-[12px] uppercase tracking-[0.2em] text-[#b8926b] mb-2 sm:mb-3">
-            STEP 3: EVERYTHING YOU NEED TO KNOW
-          </p>
+            {/* Mahti — quantifiable result */}
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-sm">
+              <div className="flex items-center gap-2.5 mb-4">
+                <img src="/testimonials/mahti.png" alt="" className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
+                <p className="text-[13px] sm:text-[14px] font-semibold text-[#323B46]">Mahti</p>
+              </div>
+              <div className="space-y-2">
+                <div className="bg-[#f5f5f5] rounded-2xl rounded-tl-md px-4 py-2.5 inline-block">
+                  <p className="text-[14px] sm:text-[16px] text-[#1a1a1a]">I&apos;ve reclaimed 10-15 hours per week of my time.</p>
+                </div>
+                <div className="bg-[#f5f5f5] rounded-2xl rounded-tl-md px-4 py-2.5 inline-block">
+                  <p className="text-[14px] sm:text-[16px] text-[#1a1a1a]">I&apos;m not sure how I ever got by without the help of a home manager now.</p>
+                </div>
+              </div>
+            </div>
 
-          <h2 className="text-[26px] sm:text-[44px] md:text-[42px] font-semibold text-[#323B46] leading-tight mb-6 sm:mb-10">
-            Download Your<br />
-            Pre-Call Guide
-          </h2>
+            {/* Amy — family impact */}
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-sm">
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className="w-8 h-8 rounded-full bg-[#f5f0e8] flex items-center justify-center flex-shrink-0">
+                  <span className="text-[12px] font-semibold text-[#b8926b]">A</span>
+                </div>
+                <p className="text-[13px] sm:text-[14px] font-semibold text-[#323B46]">Amy</p>
+              </div>
+              <div className="bg-[#f5f5f5] rounded-2xl rounded-tl-md px-4 py-2.5 inline-block">
+                <p className="text-[14px] sm:text-[16px] text-[#1a1a1a]">I told my kids last weekend how much happier and peaceful I feel with Patti&apos;s amazing support to&nbsp;us!</p>
+              </div>
+            </div>
 
-          {/* Download Card */}
-          <div className="bg-[#f5f0e8] rounded-2xl sm:rounded-3xl p-6 sm:p-10 transition-all duration-300 hover:shadow-lg">
-            <p className="text-[16px] sm:text-[20px] text-[#555] mb-4 sm:mb-6 leading-relaxed">
-              This guide contains everything you need to know to get the absolute most value from our call.
-            </p>
+            {/* Hugh — humor + quality */}
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-sm">
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className="w-8 h-8 rounded-full bg-[#f5f0e8] flex items-center justify-center flex-shrink-0">
+                  <span className="text-[12px] font-semibold text-[#b8926b]">H</span>
+                </div>
+                <p className="text-[13px] sm:text-[14px] font-semibold text-[#323B46]">Hugh</p>
+              </div>
+              <div className="space-y-2">
+                <div className="bg-[#f5f5f5] rounded-2xl rounded-tl-md px-4 py-2.5 inline-block">
+                  <p className="text-[14px] sm:text-[16px] text-[#1a1a1a]">Matt was very good today</p>
+                </div>
+                <div className="bg-[#f5f5f5] rounded-2xl rounded-tl-md px-4 py-2.5 inline-block">
+                  <p className="text-[14px] sm:text-[16px] text-[#1a1a1a]">Annoyingly, Jennifer was also quite lovely 😂</p>
+                </div>
+              </div>
+            </div>
 
-            <p className="text-[15px] sm:text-[17px] text-[#555] mb-5 sm:mb-8 leading-relaxed">
-              Share this guide with your partner so you&apos;re both prepared for our conversation.
-            </p>
-
-            <a
-              href="https://slaw-floral-56242297.figma.site"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block px-6 sm:px-10 py-3.5 sm:py-4 bg-[#1a1a1a] text-white font-medium rounded-full text-sm sm:text-base transition-all duration-200 hover:bg-black hover:-translate-y-1 hover:shadow-xl hover:scale-[1.02] active:translate-y-0 active:scale-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b8926b] focus-visible:ring-offset-2"
-            >
-              Download the Pre-Call PDF
-            </a>
-          </div>
-
-          {/* Teaser for next section */}
-          <div className="mt-10 sm:mt-14 flex flex-col items-center">
-            <p className="text-[13px] sm:text-[14px] text-[#888] mb-2">One more thing...</p>
-            <p className="text-[15px] sm:text-[17px] text-[#555] font-medium">We have a personal gift for you below</p>
-            <svg className="w-5 h-5 text-[#b8926b] mt-3 animate-bounce-subtle" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-            </svg>
           </div>
         </div>
       </section>
@@ -1304,8 +1275,8 @@ export default function BookedPage() {
       {/* ===================================================================
           PERSONAL NOTE - Message from Founder + Audio Player
       =================================================================== */}
-      <section id="letter" className="px-4 py-8 sm:py-16 bg-[#fefdfb]">
-        <div className="max-w-2xl mx-auto scroll-reveal">
+      <section id="letter" className="px-4 py-12 sm:py-20 lg:py-24 bg-[#fefdfb]">
+        <div className="max-w-3xl mx-auto scroll-reveal">
           {/* SVG filter for deckle edge effect - only applied to background */}
           <svg className="absolute w-0 h-0" aria-hidden="true">
             <defs>
@@ -1399,25 +1370,19 @@ export default function BookedPage() {
       {/* ===================================================================
           FOOTER
       =================================================================== */}
-      <footer className="py-6 sm:py-8 px-4 sm:px-6 bg-[#fefdfb] text-[#454545]">
+      <footer className="py-8 sm:py-12 px-4 sm:px-6 bg-[#fefdfb] border-t border-[#f0ebe0]">
         <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
-            <img src="/hum-logo.png" alt="HUM" className="h-5 sm:h-6 w-auto" />
-            <div className="flex flex-wrap justify-center gap-x-4 sm:gap-x-6 gap-y-2">
-              <Link href="/privacy-policy" className="text-[12px] sm:text-[13px] text-[#666] hover:text-[#444] transition-colors">
+          <div className="flex flex-col items-center gap-5 sm:flex-row sm:justify-between">
+            <img src="/hum-logo.png" alt="HUM" className="h-5 sm:h-6 w-auto opacity-60" />
+            <div className="flex flex-wrap justify-center gap-x-5 sm:gap-x-8 gap-y-2">
+              <Link href="/privacy-policy" className="text-[12px] sm:text-[13px] text-[#999] hover:text-[#666] transition-colors">
                 Privacy Policy
               </Link>
-              <Link href="/terms-of-service" className="text-[12px] sm:text-[13px] text-[#666] hover:text-[#444] transition-colors">
+              <Link href="/terms-of-service" className="text-[12px] sm:text-[13px] text-[#999] hover:text-[#666] transition-colors">
                 Terms of Service
               </Link>
-              <Link href="/disclaimer" className="text-[12px] sm:text-[13px] text-[#666] hover:text-[#444] transition-colors">
-                Disclaimer
-              </Link>
-              <Link href="/cookie-policy" className="text-[12px] sm:text-[13px] text-[#666] hover:text-[#444] transition-colors">
-                Cookie Policy
-              </Link>
             </div>
-            <p className="text-[12px] sm:text-[13px] text-[#888]">
+            <p className="text-[12px] sm:text-[13px] text-[#bbb]">
               © {new Date().getFullYear()} HUM
             </p>
           </div>
