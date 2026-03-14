@@ -1096,7 +1096,7 @@ export default function BookedPage() {
           {/* Scarcity — authentic capacity limit */}
           <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 sm:p-5 text-center shadow-sm max-w-2xl mx-auto">
             <p className="text-[13px] sm:text-[14px] text-[#555]">
-              <span className="font-semibold text-[#323B46]">We onboard just 20 families per month.</span> We&apos;re a small team that never takes on more than we can deliver at the highest level. Your call slot is&nbsp;reserved.
+              <span className="font-semibold text-[#323B46]">We&apos;re currently onboarding just 20 families per month.</span> We&apos;re a small, established team that never takes on more than we can deliver at the highest level. Your call slot is&nbsp;reserved.
             </p>
           </div>
         </div>
