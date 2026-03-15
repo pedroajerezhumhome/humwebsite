@@ -204,7 +204,7 @@ function AdvisorInitialAvatar({ initials }: { initials: string }) {
 }
 
 // Dynamic Calendar Card Component
-function DynamicCalendarCard() {
+function DynamicCalendarCard({ isGeneric = false }: { isGeneric?: boolean }) {
   const bookingDetails = useBookingDetails();
 
   const monthShort = bookingDetails?.monthShort || "TBD";
@@ -216,6 +216,11 @@ function DynamicCalendarCard() {
   const duration = bookingDetails?.duration || "";
 
   const matchedAdvisor = findAdvisor(assignedTo);
+
+  // Generic mode: hide the calendar card entirely
+  if (isGeneric) {
+    return null;
+  }
 
   return (
     <div className="bg-[#f5f0e8] rounded-xl sm:rounded-2xl p-4 sm:p-5">
@@ -855,7 +860,7 @@ function PreCallGuideStep() {
 }
 
 // Personalized Hero Component — lean, focused confirmation + countdown
-function PersonalizedHero() {
+function PersonalizedHero({ isGeneric = false }: { isGeneric?: boolean }) {
   const bookingDetails = useBookingDetails();
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [timerStatus, setTimerStatus] = useState<"counting" | "now" | "passed" | "hidden">("hidden");
@@ -907,7 +912,7 @@ function PersonalizedHero() {
         </p>
 
         <h1 className="text-[28px] sm:text-[40px] md:text-[48px] lg:text-[56px] font-bold text-[#323B46] leading-[1.12] tracking-[-0.02em] mb-5 sm:mb-8 animate-on-load animate-fade-in-up animation-delay-100">
-          {firstName && <>{firstName}, </>}You Just Took the First Step Toward Bringing Your Family Closer&nbsp;Together
+          {!isGeneric && firstName && <>{firstName}, </>}You Just Took the First Step Toward Bringing Your Family Closer&nbsp;Together
         </h1>
 
         <p className="text-[16px] sm:text-[20px] md:text-[22px] text-[#555] max-w-2xl mx-auto mb-8 sm:mb-12 leading-relaxed px-2 sm:px-0 animate-on-load animate-fade-in-up animation-delay-200">
@@ -974,7 +979,7 @@ function PersonalizedHero() {
   );
 }
 
-export default function BookedPage() {
+export default function BookedPage({ isGeneric = false }: { isGeneric?: boolean } = {}) {
   // Initialize scroll reveal animations
   useScrollReveal();
 
@@ -1045,7 +1050,7 @@ export default function BookedPage() {
           HERO SECTION - Personalized Confirmation Message
       =================================================================== */}
       <Suspense fallback={null}>
-        <PersonalizedHero />
+        <PersonalizedHero isGeneric={isGeneric} />
       </Suspense>
 
       {/* ===================================================================
@@ -1132,7 +1137,7 @@ export default function BookedPage() {
               </div>
               <Suspense fallback={null}>
                 <div className="mt-4">
-                  <DynamicCalendarCard />
+                  <DynamicCalendarCard isGeneric={isGeneric} />
                 </div>
               </Suspense>
             </div>
