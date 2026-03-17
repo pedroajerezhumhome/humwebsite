@@ -916,7 +916,7 @@ function PersonalizedHero({ isGeneric = false }: { isGeneric?: boolean }) {
         </h1>
 
         <p className="text-[16px] sm:text-[20px] md:text-[22px] text-[#555] max-w-2xl mx-auto mb-8 sm:mb-12 leading-relaxed px-2 sm:px-0 animate-on-load animate-fade-in-up animation-delay-200">
-          You already know there&apos;s a better way to run your home. We&apos;re going to show you exactly what that looks like.
+          That feeling right now? The mix of relief and excitement and &ldquo;finally&rdquo;? Hold onto that. It means something.
         </p>
 
         {/* Integrated Countdown Timer */}
@@ -1054,6 +1054,17 @@ export default function BookedPage({ isGeneric = false }: { isGeneric?: boolean 
       </Suspense>
 
       {/* ===================================================================
+          VISION MOMENT — The life they just said yes to
+      =================================================================== */}
+      <section className="px-4 py-10 sm:py-16 lg:py-20 bg-[#fefdfb]">
+        <div className="max-w-2xl mx-auto text-center scroll-reveal">
+          <p className="text-[16px] sm:text-[19px] md:text-[21px] text-[#555] leading-[1.75] sm:leading-[1.85] italic">
+            Picture this: a few weeks from now, you wake up and the house is already running. Your morning is yours. Your daughter asks &ldquo;Can we bake cookies?&rdquo; and you say yes. Not because you found the time, but because someone else is holding everything that used to fill it. That&apos;s what we&apos;re building toward on this call.
+          </p>
+        </div>
+      </section>
+
+      {/* ===================================================================
           WHAT TO EXPECT ON YOUR CALL
       =================================================================== */}
       <section id="expect" className="relative px-4 py-12 sm:py-20 lg:py-24 bg-[#f5f0e8] noise-texture overflow-hidden">
@@ -1062,7 +1073,7 @@ export default function BookedPage({ isGeneric = false }: { isGeneric?: boolean 
             What to Expect on Your Call
           </h2>
           <p className="text-[15px] sm:text-[17px] text-[#555] text-center mb-8 sm:mb-10 max-w-lg mx-auto leading-relaxed">
-            A relaxed, honest 30-minute conversation about what&apos;s possible for your family.
+            Not a sales pitch. A real conversation with someone who genuinely wants to understand your family and show you what&apos;s possible.
           </p>
 
           {/* What to expect — checklist + how the call feels */}
@@ -1093,7 +1104,7 @@ export default function BookedPage({ isGeneric = false }: { isGeneric?: boolean 
 
             <div className="border-t border-[#f0ebe0] mt-6 pt-6">
               <p className="text-[14px] sm:text-[16px] text-[#555] leading-[1.8] sm:leading-[1.9]">
-                We&apos;ll start by listening. You&apos;ll tell us about your family, your home, and what&apos;s not working. Then we&apos;ll walk through how HUM could help, tailored to your specific situation.
+                We&apos;ll start by listening. You&apos;ll tell us about your family, your home, and the moments where the weight is heaviest. Families tell us it&apos;s the first time someone actually understood what they carry instead of offering another band-aid.
               </p>
             </div>
           </div>
@@ -1116,7 +1127,7 @@ export default function BookedPage({ isGeneric = false }: { isGeneric?: boolean 
             Three Things to Do<br className="hidden sm:inline" /> Before Your Call
           </h2>
           <p className="text-[15px] sm:text-[17px] text-[#555] text-center mb-10 sm:mb-14 max-w-lg mx-auto leading-relaxed">
-            Takes about 3 minutes. Each one makes our time together more productive.
+            A few minutes now so our conversation can go deeper.
           </p>
 
           <div className="space-y-4 sm:space-y-5">
@@ -1153,7 +1164,7 @@ export default function BookedPage({ isGeneric = false }: { isGeneric?: boolean 
                     Invite your partner to join
                   </h3>
                   <p className="text-[14px] sm:text-[15px] text-[#555] leading-relaxed mb-3">
-                    Your call will be most productive with both decision-makers present. Families who do this together tell us it&apos;s the best conversation they&apos;ve had about their home in years.
+                    Something unexpected happens when both partners hear this together. Families tell us it turns into the best conversation they&apos;ve had about their home in years. Because for once, it&apos;s not about logistics. It&apos;s about the life you actually want.
                   </p>
                   <p className="text-[14px] sm:text-[15px] text-[#555] leading-relaxed">
                     If you added their email when booking, they already have the invite. Make sure they accept it too. If not, forward the calendar event and add them directly.
