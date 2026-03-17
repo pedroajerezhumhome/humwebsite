@@ -912,7 +912,7 @@ function PersonalizedHero({ isGeneric = false }: { isGeneric?: boolean }) {
         </p>
 
         <h1 className="text-[28px] sm:text-[40px] md:text-[48px] lg:text-[56px] font-bold text-[#323B46] leading-[1.12] tracking-[-0.02em] mb-5 sm:mb-8 animate-on-load animate-fade-in-up animation-delay-100">
-          {!isGeneric && firstName && <>{firstName}, </>}You Just Took the First Step Toward Bringing Your Family Closer&nbsp;Together
+          {!isGeneric && firstName && <>{firstName}, </>}You Just Said Yes to Getting Your Life Back and Bringing Your Family Closer&nbsp;Together
         </h1>
 
         <p className="text-[16px] sm:text-[20px] md:text-[22px] text-[#555] max-w-2xl mx-auto mb-8 sm:mb-12 leading-relaxed px-2 sm:px-0 animate-on-load animate-fade-in-up animation-delay-200">

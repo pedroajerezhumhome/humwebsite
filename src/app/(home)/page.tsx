@@ -76,12 +76,12 @@ export default function Home() {
     {
       question: "How much does HUM cost?",
       answer:
-        "Pricing depends on your specific household needs. Your investment covers everything required to set this up correctly from day one—building your household manual, sourcing, vetting, and training your house manager. After that, you pay your house manager directly, typically $25–45/hour depending on experience and your market.",
+        "Pricing depends on your specific household needs. Your investment covers everything required to set this up correctly from day one: building your household manual, sourcing, vetting, and training your house manager. After that, you pay your house manager directly, typically $25–45/hour depending on experience and your market.",
     },
     {
       question: "What exactly does a house manager do?",
       answer:
-        "Our house managers are a hybrid between a household assistant and a house manager. They handle daily operations, organization, errands, and vendor coordination—but can also take on light childcare, cooking, and more. The biggest value? Role consolidation. Instead of managing multiple people, you have one trained professional who runs it all.",
+        "Our house managers are a hybrid between a household assistant and a house manager. They handle daily operations, organization, errands, and vendor coordination, but can also take on light childcare, cooking, and more. The biggest value? Role consolidation. Instead of managing multiple people, you have one trained professional who runs it all.",
     },
     {
       question: "Where do you find your house managers?",
@@ -91,7 +91,7 @@ export default function Home() {
     {
       question: "How long does it take to get started?",
       answer:
-        "Typically 30–90 days from when you decide to move forward to your house manager's first day. This timeframe covers building your manual, sourcing and vetting candidates, and training. Timing is also subject to our availability—we're in high demand and capacity varies.",
+        "Typically 30–90 days from when you decide to move forward to your house manager's first day. This timeframe covers building your manual, sourcing and vetting candidates, and training. Timing is also subject to our availability. We're in high demand and capacity varies.",
     },
     {
       question: "Am I the employer, or is HUM?",
@@ -101,12 +101,12 @@ export default function Home() {
     {
       question: "What if my house manager doesn't work out?",
       answer:
-        "We repair before we replace—often issues are system problems, not people problems. If it's truly not a fit, we find a replacement at no additional cost.",
+        "We repair before we replace. Often issues are system problems, not people problems. If it's truly not a fit, we find a replacement at no additional cost.",
     },
     {
       question: "What systems will we use?",
       answer:
-        "Your household runs on HomeOS, our custom software with an AI co-pilot built in. It's built around a complete directory of your home with custom playbooks for every area. Your house manager uses it daily to know exactly what needs to happen when they walk in—while giving you full visibility into what gets done each day and how long they worked.",
+        "Your household runs on HomeOS, our custom software with an AI co-pilot built in. It's built around a complete directory of your home with custom playbooks for every area. Your house manager uses it daily to know exactly what needs to happen when they walk in, while giving you full visibility into what gets done each day and how long they worked.",
     },
     {
       question: "What happens after placement?",
@@ -306,9 +306,7 @@ export default function Home() {
           </h2>
 
           <p className="text-base sm:text-lg md:text-xl text-[#969593] max-w-2xl mx-auto mb-8 sm:mb-12 leading-relaxed">
-            HUM builds your household operating system, finds and trains your
-            perfect house manager to run it, and stays involved until it actually
-            works so you don&apos;t have to.
+            Imagine waking up and the house is already running. Your morning is yours. Your weekend is actually free. HUM makes that real. A trained house manager, a system built around your family, and support that never disappears.
           </p>
 
           <button
@@ -332,16 +330,28 @@ export default function Home() {
           </h2>
           <div className="space-y-3 sm:space-y-4 mb-8 sm:mb-16 text-left sm:text-center">
             <p className="text-base sm:text-xl text-[#888]">
-              Hired a cleaner — now you manage a cleaner
+              Hired a cleaner. Now you manage a cleaner
             </p>
             <p className="text-base sm:text-xl text-[#888]">
-              Downloaded the apps — now you run the apps
+              Downloaded the apps. Now you run the apps
             </p>
             <p className="text-base sm:text-xl text-[#888]">
-              Made the lists — now you enforce the lists
+              Made the lists. Now you enforce the lists
             </p>
           </div>
           <p className="text-base sm:text-xl text-[#454545]">HUM doesn&apos;t.</p>
+        </div>
+      </section>
+
+      {/* Vision — The life they're buying */}
+      <section className="flex items-center justify-center px-4 py-16 sm:py-24">
+        <div className="max-w-2xl mx-auto text-center">
+          <p className="text-base sm:text-xl md:text-2xl text-[#454545] leading-[1.8] sm:leading-[1.9] italic">
+            You walk through the door and the house is calm. Not because nothing happened. Because everything already did. You check your phone and there&apos;s no list waiting. Your weekend opens up and you don&apos;t fill it with errands. You&apos;re at your kid&apos;s game and you&apos;re actually watching.
+          </p>
+          <p className="text-base sm:text-lg text-[#888] mt-6 sm:mt-8">
+            That&apos;s what families tell us changes first. Not the house. The feeling.
+          </p>
         </div>
       </section>
 
@@ -468,31 +478,34 @@ export default function Home() {
           <div className="text-center mb-12 sm:mb-20">
             <div className="w-10 h-[2px] bg-[#b8926b] mx-auto mb-4"></div>
             <p className="text-xs uppercase tracking-widest text-[#b8926b] mb-4 sm:mb-6">
-              Measured Impact
+              What Families Tell Us
             </p>
             <h2 className="text-[30px] sm:text-[44px] md:text-[56px] font-semibold text-[#454545] leading-tight">
-              See your life improving.
+              The part no one sees coming.
             </h2>
-            <p className="text-base sm:text-xl md:text-2xl text-[#454545] mt-4 max-w-2xl mx-auto">
-              Your Home Performance Dashboard tracks what matters.
-            </p>
           </div>
 
-          <div className="grid sm:grid-cols-3 gap-8 sm:gap-8 text-center">
+          <div className="grid sm:grid-cols-3 gap-6 sm:gap-8">
             {[
-              { metric: "Hours Returned", description: "Real time back in your week." },
-              { metric: "System Uptime", description: "How consistently your home runs." },
               {
-                metric: "Mental Load Eliminated",
-                description: "Tasks you no longer think about.",
+                quote: "\u201CSaturday feels like Saturday again.\u201D",
+                detail: "No errands, no deep cleaning. The weekend is actually free.",
+              },
+              {
+                quote: "\u201CI\u2019m not two places at once anymore.\u201D",
+                detail: "At work, you\u2019re not thinking about the plumber. At home, you\u2019re not running tomorrow\u2019s list.",
+              },
+              {
+                quote: "\u201CWe talk about things that aren\u2019t logistics.\u201D",
+                detail: "When the household runs itself, you find out your partner is actually pretty fun to be around.",
               },
             ].map((item, i) => (
-              <div key={i}>
-                <div className="text-base sm:text-xl font-medium text-[#454545] mb-1">
-                  {item.metric}
-                </div>
-                <p className="text-base sm:text-xl text-[#999]">
-                  {item.description}
+              <div key={i} className="bg-[#ebe6df] rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-center">
+                <p className="text-base sm:text-xl font-medium text-[#454545] mb-2 italic">
+                  {item.quote}
+                </p>
+                <p className="text-sm sm:text-base text-[#888] leading-relaxed">
+                  {item.detail}
                 </p>
               </div>
             ))}
@@ -554,6 +567,15 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Joy Interlude — the point of all of this */}
+      <section className="px-4 py-16 sm:py-24">
+        <div className="max-w-2xl mx-auto text-center">
+          <p className="text-base sm:text-xl md:text-2xl text-[#454545] leading-[1.8] sm:leading-[1.9] italic">
+            Someday soon, you&apos;ll be driving home and realize you&apos;re not dreading what&apos;s waiting. The house will be handled. Dinner will be figured out. And for the first time in a long time, you&apos;ll just&hellip; drive home. Looking forward to being there.
+          </p>
+        </div>
+      </section>
+
       {/* Book a Call / CTA Section */}
       <section id="cta" className="px-4 py-24 sm:py-24 bg-[#f8f6f2]">
         <div className="max-w-4xl lg:max-w-6xl mx-auto text-center w-full">
@@ -562,10 +584,10 @@ export default function Home() {
             Next Steps
           </p>
           <h2 className="text-[30px] sm:text-[44px] md:text-[56px] font-semibold text-[#454545] leading-tight mb-4">
-            Ready to stop managing?
+            Ready to be in your life<br className="hidden sm:inline" /> instead of managing it?
           </h2>
           <p className="text-base sm:text-xl md:text-2xl text-[#454545] mb-0 max-w-2xl mx-auto">
-            Book a free call with our team.
+            No pitch. Just a real conversation about what your family actually needs.
           </p>
 
           {/* Scheduler.ai Widget */}
