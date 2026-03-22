@@ -459,7 +459,7 @@ function AudioPlayer() {
       </div>
 
       <p className="text-[12px] sm:text-[13px] text-[#555] text-center mt-5 italic">
-        This song is shared with you personally. Please don&apos;t distribute.
+        This is just for you. We&apos;ve never shared it publicly.
       </p>
     </div>
   );
@@ -821,17 +821,48 @@ function ExpandableLetter() {
   );
 }
 
+// Partner Step — conditionally shown based on hasPartner
+function PartnerStep() {
+  const bookingDetails = useBookingDetails();
+  const hasPartner = bookingDetails?.hasPartner ?? true; // default to showing it
+
+  if (!hasPartner) return null;
+
+  return (
+    <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-sm transition-all duration-300 hover:shadow-lg">
+      <div className="flex items-start gap-4">
+        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#b8926b] flex items-center justify-center flex-shrink-0 mt-0.5">
+          <span className="text-white text-sm sm:text-base font-semibold">2</span>
+        </div>
+        <div className="flex-1 min-w-0">
+          <h3 className="font-semibold text-[16px] sm:text-[18px] text-[#323B46] mb-2">
+            Invite your partner to join
+          </h3>
+          <p className="text-[14px] sm:text-[15px] text-[#555] leading-relaxed mb-3">
+            Something unexpected happens when both partners hear this together. Families tell us it turns into the best conversation they&apos;ve had about their home in years. Because for once, it&apos;s not about logistics. It&apos;s about the life you actually want.
+          </p>
+          <p className="text-[14px] sm:text-[15px] text-[#555] leading-relaxed">
+            If you added their email when booking, they already have the invite. Make sure they accept it too. If not, forward the calendar event and add them directly.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // Pre-Call Guide Step (routes to persona-specific page)
 function PreCallGuideStep() {
   const bookingDetails = useBookingDetails();
   const persona = bookingDetails?.persona || "mom";
+  const hasPartner = bookingDetails?.hasPartner ?? true;
+  const stepNumber = hasPartner ? 3 : 2;
   const guideHref = "https://slaw-floral-56242297.figma.site";
 
   return (
     <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-sm transition-all duration-300 hover:shadow-lg">
       <div className="flex items-start gap-4">
         <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#b8926b] flex items-center justify-center flex-shrink-0 mt-0.5">
-          <span className="text-white text-sm sm:text-base font-semibold">3</span>
+          <span className="text-white text-sm sm:text-base font-semibold">{stepNumber}</span>
         </div>
         <div className="flex-1 min-w-0">
           <h3 className="font-semibold text-[16px] sm:text-[18px] text-[#323B46] mb-2">
@@ -912,11 +943,11 @@ function PersonalizedHero({ isGeneric = false }: { isGeneric?: boolean }) {
         </p>
 
         <h1 className="text-[28px] sm:text-[40px] md:text-[48px] lg:text-[56px] font-bold text-[#323B46] leading-[1.12] tracking-[-0.02em] mb-5 sm:mb-8 animate-on-load animate-fade-in-up animation-delay-100">
-          {!isGeneric && firstName && <>{firstName}, </>}You Just Said Yes to Getting Your Life Back and Bringing Your Family Closer&nbsp;Together
+          {!isGeneric && firstName && <>{firstName}, </>}You Just Took the First Step Toward Getting Your Life&nbsp;Back
         </h1>
 
         <p className="text-[16px] sm:text-[20px] md:text-[22px] text-[#555] max-w-2xl mx-auto mb-8 sm:mb-12 leading-relaxed px-2 sm:px-0 animate-on-load animate-fade-in-up animation-delay-200">
-          That feeling right now? The mix of relief and excitement and &ldquo;finally&rdquo;? Hold onto that. It means something.
+          That feeling right now? The mix of relief and excitement and &ldquo;finally&rdquo;? Hold onto that. It means something. Wanting help isn&apos;t a luxury. It&apos;s clarity.
         </p>
 
         {/* Integrated Countdown Timer */}
@@ -965,7 +996,7 @@ function PersonalizedHero({ isGeneric = false }: { isGeneric?: boolean }) {
         )}
 
         <p className="text-[14px] sm:text-[16px] text-[#b8926b] max-w-md mx-auto mb-4 sm:mb-8 px-2 sm:px-0 animate-on-load animate-fade-in-up animation-delay-300 italic">
-          P.S. There&apos;s something personal waiting for you at the end of this page. A gift we&apos;ve never shared publicly.
+          P.S. There&apos;s something personal waiting for you at the end of this page.
         </p>
 
         <div className="sm:hidden flex flex-col items-center animate-bounce-subtle">
@@ -974,6 +1005,141 @@ function PersonalizedHero({ isGeneric = false }: { isGeneric?: boolean }) {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
           </svg>
         </div>
+      </div>
+    </section>
+  );
+}
+
+// Testimonial data
+type Testimonial = {
+  id: string;
+  name: string;
+  avatar: { type: "image"; src: string } | { type: "initial"; letter: string };
+  messages: string[];
+  persona: "mom" | "dad" | "neutral";
+};
+
+const TESTIMONIALS: Testimonial[] = [
+  {
+    id: "sandi",
+    name: "Sandi",
+    avatar: { type: "initial", letter: "S" },
+    messages: ["She\u2019s my person \u2764\uFE0F", "I\u2019d like her to be ours immediately. And forever."],
+    persona: "mom",
+  },
+  {
+    id: "michael",
+    name: "Michael",
+    avatar: { type: "image", src: "/testimonials/michael.png" },
+    messages: ["Brianna is hired!!! She ROCKED it today, I told her on the spot"],
+    persona: "dad",
+  },
+  {
+    id: "tommy-suzi",
+    name: "Tommy & Suzi",
+    avatar: { type: "initial", letter: "T" },
+    messages: ["Life now feels calmer, more organized, and honestly just easier. Having the right house manager in place has taken a huge weight off our shoulders."],
+    persona: "neutral",
+  },
+  {
+    id: "mahti",
+    name: "Mahti",
+    avatar: { type: "image", src: "/testimonials/mahti.png" },
+    messages: ["I\u2019ve reclaimed 10-15 hours per week of my time.", "I\u2019m not sure how I ever got by without the help of a home manager now."],
+    persona: "neutral",
+  },
+  {
+    id: "amy",
+    name: "Amy",
+    avatar: { type: "initial", letter: "A" },
+    messages: ["I told my kids last weekend how much happier and peaceful I feel with Patti\u2019s amazing support to\u00A0us!"],
+    persona: "mom",
+  },
+  {
+    id: "hugh",
+    name: "Hugh",
+    avatar: { type: "initial", letter: "H" },
+    messages: ["Matt was very good today", "Annoyingly, Jennifer was also quite lovely \uD83D\uDE02"],
+    persona: "dad",
+  },
+];
+
+function getOrderedTestimonials(persona: "mom" | "dad" | "individual"): Testimonial[] {
+  if (persona === "dad") {
+    // Lead with dad testimonials, then neutral, then mom
+    return [...TESTIMONIALS].sort((a, b) => {
+      const order = { dad: 0, neutral: 1, mom: 2 };
+      return order[a.persona] - order[b.persona];
+    });
+  }
+  if (persona === "individual") {
+    // Lead with neutral/outcome testimonials, then mix
+    return [...TESTIMONIALS].sort((a, b) => {
+      const order = { neutral: 0, mom: 1, dad: 1 };
+      return order[a.persona] - order[b.persona];
+    });
+  }
+  // Default (mom): original order — mom first
+  return TESTIMONIALS;
+}
+
+function TestimonialsSection() {
+  const bookingDetails = useBookingDetails();
+  const persona = bookingDetails?.persona || "mom";
+  const ordered = getOrderedTestimonials(persona);
+
+  return (
+    <section id="families" className="relative px-4 py-12 sm:py-20 lg:py-24 bg-[#f5f0e8] noise-texture overflow-hidden">
+      <div className="relative z-10 max-w-5xl mx-auto scroll-reveal">
+        <p className="text-[11px] sm:text-[12px] uppercase tracking-[0.3em] text-[#b8926b] mb-10 sm:mb-14 text-center">
+          FROM FAMILIES WHO&apos;VE BEEN HERE
+        </p>
+
+        <div className="grid md:grid-cols-2 gap-4 sm:gap-5">
+          {ordered.map((t) => (
+            <div key={t.id} className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-sm">
+              <div className="flex items-center gap-2.5 mb-4">
+                {t.avatar.type === "image" ? (
+                  <img src={t.avatar.src} alt="" className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-[#f5f0e8] flex items-center justify-center flex-shrink-0">
+                    <span className="text-[12px] font-semibold text-[#b8926b]">{t.avatar.letter}</span>
+                  </div>
+                )}
+                <p className="text-[13px] sm:text-[14px] font-semibold text-[#323B46]">{t.name}</p>
+              </div>
+              <div className={t.messages.length > 1 ? "space-y-2" : ""}>
+                {t.messages.map((msg, i) => (
+                  <div key={i} className="bg-[#f5f5f5] rounded-2xl rounded-tl-md px-4 py-2.5 inline-block">
+                    <p className="text-[14px] sm:text-[16px] text-[#1a1a1a]">{msg}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Vision Moment — persona-aware
+function VisionMoment() {
+  const bookingDetails = useBookingDetails();
+  const persona = bookingDetails?.persona || "mom";
+
+  const visionText = {
+    mom: "Picture this: a few weeks from now, you wake up and the house is already running. Your morning is yours. Your daughter asks \u201CCan we bake cookies?\u201D and you say yes. Not because you found the time, but because someone else is holding everything that used to fill it. You\u2019re the architect of your family\u2019s life, not the laborer. That\u2019s what we\u2019re building toward on this call.",
+    dad: "Picture this: a few weeks from now, Saturday morning hits and you\u2019re not running errands. You\u2019re at the game. Actually watching. The house is handled, the week is handled, and your family gets the version of you that isn\u2019t running on fumes. That\u2019s what we\u2019re building toward on this call.",
+    individual: "Picture this: a few weeks from now, you come home and the house is already handled. Your evening is yours. No list in your head, no vendor to chase, no Sunday lost to catching up. Just your time, returned to you. That\u2019s what we\u2019re building toward on this call.",
+  };
+
+  return (
+    <section className="px-4 py-10 sm:py-16 lg:py-20 bg-[#fefdfb]">
+      <div className="max-w-2xl mx-auto text-center scroll-reveal">
+        <p className="text-[16px] sm:text-[19px] md:text-[21px] text-[#555] leading-[1.75] sm:leading-[1.85]">
+          {visionText[persona]}
+        </p>
       </div>
     </section>
   );
@@ -1056,13 +1222,9 @@ export default function BookedPage({ isGeneric = false }: { isGeneric?: boolean 
       {/* ===================================================================
           VISION MOMENT — The life they just said yes to
       =================================================================== */}
-      <section className="px-4 py-10 sm:py-16 lg:py-20 bg-[#fefdfb]">
-        <div className="max-w-2xl mx-auto text-center scroll-reveal">
-          <p className="text-[16px] sm:text-[19px] md:text-[21px] text-[#555] leading-[1.75] sm:leading-[1.85] italic">
-            Picture this: a few weeks from now, you wake up and the house is already running. Your morning is yours. Your daughter asks &ldquo;Can we bake cookies?&rdquo; and you say yes. Not because you found the time, but because someone else is holding everything that used to fill it. That&apos;s what we&apos;re building toward on this call.
-          </p>
-        </div>
-      </section>
+      <Suspense fallback={null}>
+        <VisionMoment />
+      </Suspense>
 
       {/* ===================================================================
           WHAT TO EXPECT ON YOUR CALL
@@ -1100,11 +1262,20 @@ export default function BookedPage({ isGeneric = false }: { isGeneric?: boolean 
                 </svg>
                 <p className="text-[14px] sm:text-[16px] text-[#555]">Whether this is the right fit for your family. And if it&apos;s not, we&apos;ll tell you</p>
               </div>
+              <div className="flex items-start gap-3">
+                <svg className="w-5 h-5 text-[#b8926b] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <p className="text-[14px] sm:text-[16px] text-[#555]">Why this is a managed system, not another person to manage, and how that changes&nbsp;everything</p>
+              </div>
             </div>
 
             <div className="border-t border-[#f0ebe0] mt-6 pt-6">
               <p className="text-[14px] sm:text-[16px] text-[#555] leading-[1.8] sm:leading-[1.9]">
                 We&apos;ll start by listening. You&apos;ll tell us about your family, your home, and the moments where the weight is heaviest. Families tell us it&apos;s the first time someone actually understood what they carry instead of offering another band-aid.
+              </p>
+              <p className="text-[14px] sm:text-[16px] text-[#555] leading-[1.8] sm:leading-[1.9] mt-4">
+                We&apos;ll also walk you through how we vet and match your house manager so you feel confident about who&apos;s coming into your&nbsp;home.
               </p>
             </div>
           </div>
@@ -1112,7 +1283,7 @@ export default function BookedPage({ isGeneric = false }: { isGeneric?: boolean 
           {/* Scarcity — authentic capacity limit */}
           <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 sm:p-5 text-center shadow-sm max-w-2xl mx-auto">
             <p className="text-[13px] sm:text-[14px] text-[#555]">
-              <span className="font-semibold text-[#323B46]">We&apos;re currently onboarding just 20 families per month.</span> We&apos;re a small, established team that never takes on more than we can deliver at the highest level. Your call slot is&nbsp;reserved.
+              <span className="font-semibold text-[#323B46]">We work with a small number of families at a time</span> so every match gets our full attention. Your call slot is&nbsp;reserved.
             </p>
           </div>
         </div>
@@ -1153,28 +1324,10 @@ export default function BookedPage({ isGeneric = false }: { isGeneric?: boolean 
               </Suspense>
             </div>
 
-            {/* Step 2 — Bring Your Partner */}
-            <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-sm transition-all duration-300 hover:shadow-lg">
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#b8926b] flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <span className="text-white text-sm sm:text-base font-semibold">2</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-[16px] sm:text-[18px] text-[#323B46] mb-2">
-                    Invite your partner to join
-                  </h3>
-                  <p className="text-[14px] sm:text-[15px] text-[#555] leading-relaxed mb-3">
-                    Something unexpected happens when both partners hear this together. Families tell us it turns into the best conversation they&apos;ve had about their home in years. Because for once, it&apos;s not about logistics. It&apos;s about the life you actually want.
-                  </p>
-                  <p className="text-[14px] sm:text-[15px] text-[#555] leading-relaxed">
-                    If you added their email when booking, they already have the invite. Make sure they accept it too. If not, forward the calendar event and add them directly.
-                  </p>
-                  <p className="text-[13px] text-[#888] mt-3 italic">
-                    Flying solo or the only decision-maker? No problem. Skip this one.
-                  </p>
-                </div>
-              </div>
-            </div>
+            {/* Step 2 — Bring Your Partner (hidden for individuals without partners) */}
+            <Suspense fallback={null}>
+              <PartnerStep />
+            </Suspense>
 
             {/* Step 3 — Read the Pre-Call Guide */}
             <Suspense fallback={null}>
@@ -1187,106 +1340,9 @@ export default function BookedPage({ isGeneric = false }: { isGeneric?: boolean 
       {/* ===================================================================
           FROM FAMILIES WHO'VE BEEN HERE — Social Proof
       =================================================================== */}
-      <section id="families" className="relative px-4 py-12 sm:py-20 lg:py-24 bg-[#f5f0e8] noise-texture overflow-hidden">
-        <div className="relative z-10 max-w-5xl mx-auto scroll-reveal">
-          <p className="text-[11px] sm:text-[12px] uppercase tracking-[0.3em] text-[#b8926b] mb-10 sm:mb-14 text-center">
-            FROM FAMILIES WHO&apos;VE BEEN HERE
-          </p>
-
-          <div className="grid md:grid-cols-2 gap-4 sm:gap-5">
-
-            {/* Sandi — emotional connection */}
-            <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-sm">
-              <div className="flex items-center gap-2.5 mb-4">
-                <div className="w-8 h-8 rounded-full bg-[#f5f0e8] flex items-center justify-center flex-shrink-0">
-                  <span className="text-[12px] font-semibold text-[#b8926b]">S</span>
-                </div>
-                <p className="text-[13px] sm:text-[14px] font-semibold text-[#323B46]">Sandi</p>
-              </div>
-              <div className="space-y-2">
-                <div className="bg-[#f5f5f5] rounded-2xl rounded-tl-md px-4 py-2.5 inline-block">
-                  <p className="text-[14px] sm:text-[16px] text-[#1a1a1a]">She&apos;s my person ❤️</p>
-                </div>
-                <div className="bg-[#f5f5f5] rounded-2xl rounded-tl-md px-4 py-2.5 inline-block">
-                  <p className="text-[14px] sm:text-[16px] text-[#1a1a1a]">I&apos;d like her to be ours immediately. And forever.</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Michael — excitement */}
-            <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-sm">
-              <div className="flex items-center gap-2.5 mb-4">
-                <img src="/testimonials/michael.png" alt="" className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
-                <p className="text-[13px] sm:text-[14px] font-semibold text-[#323B46]">Michael</p>
-              </div>
-              <div className="bg-[#f5f5f5] rounded-2xl rounded-tl-md px-4 py-2.5 inline-block">
-                <p className="text-[14px] sm:text-[16px] text-[#1a1a1a]">Brianna is hired!!! She ROCKED it today, I told her on the spot</p>
-              </div>
-            </div>
-
-            {/* Tommy & Suzi — outcome */}
-            <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-sm">
-              <div className="flex items-center gap-2.5 mb-4">
-                <div className="w-8 h-8 rounded-full bg-[#f5f0e8] flex items-center justify-center flex-shrink-0">
-                  <span className="text-[12px] font-semibold text-[#b8926b]">T</span>
-                </div>
-                <p className="text-[13px] sm:text-[14px] font-semibold text-[#323B46]">Tommy &amp; Suzi</p>
-              </div>
-              <div className="bg-[#f5f5f5] rounded-2xl rounded-tl-md px-4 py-2.5 inline-block">
-                <p className="text-[14px] sm:text-[16px] text-[#1a1a1a]">Life now feels calmer, more organized, and honestly just easier. Having the right house manager in place has taken a huge weight off our shoulders.</p>
-              </div>
-            </div>
-
-            {/* Mahti — quantifiable result */}
-            <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-sm">
-              <div className="flex items-center gap-2.5 mb-4">
-                <img src="/testimonials/mahti.png" alt="" className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
-                <p className="text-[13px] sm:text-[14px] font-semibold text-[#323B46]">Mahti</p>
-              </div>
-              <div className="space-y-2">
-                <div className="bg-[#f5f5f5] rounded-2xl rounded-tl-md px-4 py-2.5 inline-block">
-                  <p className="text-[14px] sm:text-[16px] text-[#1a1a1a]">I&apos;ve reclaimed 10-15 hours per week of my time.</p>
-                </div>
-                <div className="bg-[#f5f5f5] rounded-2xl rounded-tl-md px-4 py-2.5 inline-block">
-                  <p className="text-[14px] sm:text-[16px] text-[#1a1a1a]">I&apos;m not sure how I ever got by without the help of a home manager now.</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Amy — family impact */}
-            <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-sm">
-              <div className="flex items-center gap-2.5 mb-4">
-                <div className="w-8 h-8 rounded-full bg-[#f5f0e8] flex items-center justify-center flex-shrink-0">
-                  <span className="text-[12px] font-semibold text-[#b8926b]">A</span>
-                </div>
-                <p className="text-[13px] sm:text-[14px] font-semibold text-[#323B46]">Amy</p>
-              </div>
-              <div className="bg-[#f5f5f5] rounded-2xl rounded-tl-md px-4 py-2.5 inline-block">
-                <p className="text-[14px] sm:text-[16px] text-[#1a1a1a]">I told my kids last weekend how much happier and peaceful I feel with Patti&apos;s amazing support to&nbsp;us!</p>
-              </div>
-            </div>
-
-            {/* Hugh — humor + quality */}
-            <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-sm">
-              <div className="flex items-center gap-2.5 mb-4">
-                <div className="w-8 h-8 rounded-full bg-[#f5f0e8] flex items-center justify-center flex-shrink-0">
-                  <span className="text-[12px] font-semibold text-[#b8926b]">H</span>
-                </div>
-                <p className="text-[13px] sm:text-[14px] font-semibold text-[#323B46]">Hugh</p>
-              </div>
-              <div className="space-y-2">
-                <div className="bg-[#f5f5f5] rounded-2xl rounded-tl-md px-4 py-2.5 inline-block">
-                  <p className="text-[14px] sm:text-[16px] text-[#1a1a1a]">Matt was very good today</p>
-                </div>
-                <div className="bg-[#f5f5f5] rounded-2xl rounded-tl-md px-4 py-2.5 inline-block">
-                  <p className="text-[14px] sm:text-[16px] text-[#1a1a1a]">Annoyingly, Jennifer was also quite lovely 😂</p>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
+      <Suspense fallback={null}>
+        <TestimonialsSection />
+      </Suspense>
 
       {/* ===================================================================
           PERSONAL NOTE - Message from Founder + Audio Player
@@ -1328,7 +1384,7 @@ export default function BookedPage({ isGeneric = false }: { isGeneric?: boolean 
 
             <h2 className="relative text-[24px] sm:text-[36px] md:text-[42px] font-semibold text-[#323B46] leading-tight mb-3 sm:mb-4 text-center">
               A Personal Note From<br />
-              Our Founder <span className="inline-block">❤️</span>
+              Our Founder
             </h2>
 
             {/* Intro - always visible */}
@@ -1368,7 +1424,7 @@ export default function BookedPage({ isGeneric = false }: { isGeneric?: boolean 
               </p>
 
               <p>
-                That song planted something deep in both of us. A conviction that became a mission. And that mission became HUM.
+                That song planted something deep in my co-founders and me. A conviction that became a mission. And that mission became HUM.
               </p>
 
               <p className="text-[18px] sm:text-[22px] font-semibold text-[#323B46] py-3 text-center">
