@@ -76,7 +76,7 @@
 .precall-page .precall-logo{max-width:1080px;margin:0 auto;padding:16px 24px 0;}
 .precall-page .precall-logo img{height:24px;width:auto;}
 @media(min-width:640px){.precall-page .precall-logo{padding:20px 32px 0;}.precall-page .precall-logo img{height:32px;}}
-.precall-page .hero h1{max-width:640px;margin-bottom:24px;color:var(--text);opacity:0;animation:precall-fd .8s ease .4s forwards;}
+.precall-page .hero h1{max-width:780px;margin-bottom:24px;color:var(--text);opacity:0;animation:precall-fd .8s ease .4s forwards;}
 .precall-page .hero .sub{color:var(--text-soft);font-size:1em;max-width:480px;margin:0 auto 44px;opacity:0;animation:precall-fd .8s ease .6s forwards;line-height:1.7;}
 .precall-page .trust-line{font-size:0.9em;color:var(--text-muted);letter-spacing:0.06em;margin-bottom:40px;opacity:0;animation:precall-fd .8s ease .7s forwards;}
 .precall-page .trust-line strong{color:var(--gold);font-weight:500;}
