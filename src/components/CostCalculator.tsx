@@ -128,10 +128,10 @@ export default function CostCalculator({
       {step === 1 && (
         <>
           <div className="cost-calc-header">
-            <h2>What&apos;s your time really worth?</h2>
+            <h2>How many hours fit your budget?</h2>
             <p>
-              Your buyback rate is the maximum you should pay someone to handle
-              tasks you&apos;re currently doing yourself.
+              Enter your household income and we&apos;ll help you figure out
+              the right number of hours per week for your family.
             </p>
           </div>
 

@@ -8,7 +8,7 @@ import ScrollReveal from "@/components/precall/ScrollReveal";
 import ScrollProgress from "@/components/precall/ScrollProgress";
 import HelloBar from "@/components/precall/HelloBar";
 import StickyNav from "@/components/precall/StickyNav";
-import "../precall.css";
+import "../../precall/precall.css";
 import "@/app/calculator/calculator.css";
 
 export const metadata: Metadata = {
